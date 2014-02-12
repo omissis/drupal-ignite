@@ -72,8 +72,8 @@ TMP_DIR=`mktemp -d ./drupal-ignite-core-XXXXXX`
 cp -R $TPL_DIR/ $TMP_DIR/
 
 # Replace vendor name and site name inside files
-find $TMP_DIR -type f -print0 | xargs -0 sed -i "" 's/__vendor__/tenwarp/g'
-find $TMP_DIR -type f -print0 | xargs -0 sed -i "" 's/__site__/api/g'
+find $TMP_DIR -type f -print0 | xargs -0 sed -i "" 's/__vendor__/'$VENDOR'/g'
+find $TMP_DIR -type f -print0 | xargs -0 sed -i "" 's/__site__/'$NAME'/g'
 
 # Rename files and directories to replace vendor name and site name
 FILES=`find $TMP_DIR -name "*vendor*" -o -name "*site*"`
