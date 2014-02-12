@@ -1,0 +1,25 @@
+{
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "drupal/phing-drush-task",
+                "version": "1.0",
+                "source": {
+                    "url": "http://git.drupal.org/project/phingdrushtask.git",
+                    "type": "git",
+                    "reference": "7.x-1.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "phing/phing": "2.5.0",
+        "drupal/phing-drush-task": "1.0",
+        "drupal/drupal-extension": "*"
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "minimum-stability": "dev"
+}

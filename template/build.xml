@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="__site__" default="dummy">
+    <taskdef name="drush" classname="DrushTask" />
+
+    <!-- General targets -->
+
+    <target name="dummy">
+        <echo>Dummy task. It's here to prevent unwanted default execution of the build script.</echo>
+    </target>
+
+    <!-- Local environment meta-targets -->
+
+    <target name="loc-prop">
+        <property file="build.loc.properties" />
+    </target>
+
+    <target name="loc-app" depends="loc-prop,app-configure">
+        <echo>Local application build done.</echo>
+    </target>
+
+    <target name="loc-test" depends="loc-prop,app-test">
+        <echo>Test executed.</echo>
+    </target>
+
+    <!-- Dev environment meta-targets -->
+
+    <target name="dev-prop">
+        <property file="build.dev.properties" />
+        <property name="db.url" value="${source.db.url}"/>
+    </target>
+
+    <target name="dev-app" depends="dev-prop,app-configure,disable-developer-modules,app-upload,app-test">
+        <echo>Clearing build database.</echo>
+        <drush command="sql-drop" assume="yes"></drush>
+
+        <echo>Dev application build done.</echo>
+    </target>
+
+    <!-- Stage environment meta-targets -->
+
+    <target name="stage-prop">
+        <property file="build.stage.properties" />
+        <property name="db.url" value="${source.db.url}"/>
+    </target>
+
+    <target name="stage-app" depends="stage-prop,app-configure,disable-developer-modules,app-upload,app-test">
+        <echo>Clearing build database.</echo>
+        <drush command="sql-drop" assume="yes"></drush>
+
+        <echo>Stage application build done.</echo>
+    </target>
+
+    <target name="stage-app-install" depends="stage-prop,app-configure,disable-developer-modules,app-upload,app-test">
+        <echo>Clearing build database.</echo>
+        <drush command="sql-drop" assume="yes"></drush>
+
+        <echo>Stage application build done.</echo>
+    </target>
+
+    <target name="stage-app-update" depends="stage-prop,app-configure-files,app-upload-files,app-backup-database,app-revert-features">
+        <echo>Stage application build done.</echo>
+    </target>
+
+    <!-- Configuration targets -->
+
+    <target name="app-configure" if="env">
+        <phingcall target="app-configure-files" />
+        <phingcall target="app-configure-database" />
+    </target>
+
+    <target name="app-configure-files" if="env">
+        <echo>Creating dumps dir.</echo>
+        <delete dir="dumps" includeemptydirs="true" verbose="true" failonerror="false" />
+        <mkdir dir="dumps" />
+
+        <echo>Creating private path dir.</echo>
+        <delete dir="sites/default/files/private" includeemptydirs="true" verbose="true" failonerror="false" />
+        <mkdir dir="sites/default/files/private" />
+        <chmod file="sites/default/files/private" mode="0755" verbose="true" />
+
+        <phingcall target="drush-make" />
+    </target>
+
+    <target name="app-configure-database" if="env">
+        <phingcall target="drush-site-install" />
+        <phingcall target="fixture-import" />
+    </target>
+
+    <target name="app-upload" if="env">
+        <phingcall target="app-upload-files" />
+        <phingcall target="app-upload-database" />
+        <phingcall target="app-revert-features" />
+    </target>
+
+    <target name="app-upload-files" if="env">
+        <echo>Uploading files.</echo>
+        <drush command="rsync" assume="yes">
+            <param>./</param>
+            <param>${destination.sys.user}@${domain}${destination.sys.docroot}</param>
+        </drush>
+    </target>
+
+    <target name="app-upload-database" if="env">
+        <echo>Uploading database.</echo>
+        <tstamp>
+            <format property="build.time" pattern="%Y%m%d%H%M"/>
+        </tstamp>
+        <drush command="sql-sync" assume="yes">
+            <option name="source-db-url">${source.db.url}</option>
+            <option name="source-dump">${source.sys.dump_dir}/${phing.project.name}-${build.time}.sql</option>
+            <option name="target-remote-host">${destination.sys.user}@${domain}</option>
+            <option name="target-db-url">${destination.db.url}</option>
+            <option name="target-dump">${destination.sys.dump_dir}/${phing.project.name}-${build.time}.sql</option>
+            <param>--no-cache</param>
+            <param>default</param>
+            <param>${env}</param>
+        </drush>
+    </target>
+
+    <target name="app-revert-features" if="env">
+        <echo>Reverting all features.</echo>
+        <drush command="features-revert-all" assume="yes">
+            <param>@${drush.alias}</param>
+        </drush>
+    </target>
+
+    <target name="app-backup-database" if="env">
+        <echo>Backing up database.</echo>
+        <tstamp>
+            <format property="build.time" pattern="%Y%m%d%H%M"/>
+        </tstamp>
+        <drush command="sql-dump" assume="yes">
+            <param>@${drush.alias}</param>
+            <param>--gzip</param>
+            <option name="result-file">/tmp/${phing.project.name}-drush-sql-dump-${build.time}.sql</option>
+        </drush>
+    </target>
+
+    <target name="app-test" if="env">
+        <echo>Creating behat.yml file.</echo>
+        <copy file="behat.yml.dist" tofile="behat.yml" overwrite="true">
+            <filterchain>
+                <expandproperties />
+            </filterchain>
+        </copy>
+
+        <echo>Creating test reports dir.</echo>
+        <delete dir="reports" includeemptydirs="true" verbose="true" failonerror="false" />
+        <mkdir dir="reports" />
+
+        <echo>Creating bin dir.</echo>
+        <delete dir="bin" includeemptydirs="true" verbose="true" failonerror="false" />
+        <mkdir dir="bin" />
+
+        <echo>Downloading dependencies using composer.</echo>
+        <exec command="curl -s http://getcomposer.org/installer | php" dir="bin" checkreturn="true"/>
+        <exec command="php bin/composer.phar install --prefer-dist" dir="." checkreturn="true"/>
+
+        <echo>Dumping all the classes for the autoloader.</echo>
+        <exec command="php bin/composer.phar dump-autoload -o" dir="." checkreturn="true"/>
+
+        <phingcall target="enable-testing-modules" />
+
+        <echo>Setting WatchdogMailSystem as default mailing system for @{drush.alias}</echo>
+        <php expression="json_encode(array('default-system' => 'WatchdogMailSystem'));" returnProperty="drupal.mail.system" />
+
+        <drush command="@${drush.alias} vset" assume="yes">
+            <option name="format">json</option>
+            <param>mail_system</param>
+            <param>'${drupal.mail.system}'</param>
+        </drush>
+
+        <echo>Running tests.</echo>
+        <exec command="vendor/behat/behat/bin/behat --format=junit --out=./reports"></exec>
+
+        <phingcall target="disable-testing-modules" />
+
+        <echo>Setting back default mailing system for @{drush.alias}</echo>
+        <php expression="json_encode(array('default-system' => 'DefaultMailSystem'));" returnProperty="drupal.mail.system_default" />
+
+        <drush command="@${drush.alias} vset" assume="yes">
+            <option name="format">json</option>
+            <param>mail_system</param>
+            <param>'${drupal.mail.system_default}'</param>
+        </drush>
+    </target>
+
+    <!-- Helper targets -->
+
+    <target name="drush-site-install" if="env">
+        <echo>Installing site.</echo>
+        <drush command="site-install" assume="yes">
+            <!-- <option name="locale">${app.locale}</option> -->
+            <option name="site-name">${site.name}</option>
+            <option name="site-mail">${site.mail}</option>
+            <option name="account-mail">${account.mail}</option>
+            <option name="account-name">${account.name}</option>
+            <option name="account-pass">${account.pass}</option>
+            <option name="db-url">${db.url}</option>
+            <param>${app.profile}</param>
+        </drush>
+    </target>
+
+    <target name="drush-make" if="env">
+        <echo>Running Drush Make.</echo>
+        <drush command="make" assume="yes">
+            <param>${app.makefile}</param>
+        </drush>
+    </target>
+
+    <target name="fixture-import" if="env">
+        <echo>Autoregistering migration classes.</echo>
+        <drush command="migrate-auto-register" assume="yes">
+        </drush>
+        <echo>Importing Fixtures.</echo>
+        <drush command="migrate-import" assume="yes">
+            <option name="all" />
+        </drush>
+    </target>
+
+    <target name="enable-developer-modules" if="env">
+        <echo>Enabling developer modules.</echo>
+        <drush command="pm-enable" assume="yes">
+            <param>devel</param>
+            <param>devel_generate</param>
+            <param>devel_themer</param>
+            <param>diff</param>
+            <param>email_testing</param>
+            <param>features_ui</param>
+            <param>ftools</param>
+            <param>masquerade</param>
+            <param>omega_tools</param>
+            <param>reroute_email</param>
+        </drush>
+    </target>
+
+    <target name="disable-developer-modules" if="env">
+        <echo>Disabling developer modules.</echo>
+        <drush command="pm-disable" assume="yes">
+            <param>devel</param>
+            <param>devel_generate</param>
+            <param>devel_themer</param>
+            <param>diff</param>
+            <param>features_ui</param>
+            <param>ftools</param>
+            <param>masquerade</param>
+            <param>omega_tools</param>
+        </drush>
+
+        <echo>Uninstalling developer modules.</echo>
+        <drush command="pm-uninstall" assume="yes">
+            <param>devel</param>
+            <param>devel_generate</param>
+            <param>devel_themer</param>
+            <param>diff</param>
+            <param>features_ui</param>
+            <param>ftools</param>
+            <param>masquerade</param>
+            <param>omega_tools</param>
+        </drush>
+    </target>
+
+    <target name="enable-testing-modules" if="env">
+        <echo>Enabling testing modules.</echo>
+        <drush command="pm-enable" assume="yes">
+            <param>email_testing</param>
+            <param>reroute_email</param>
+        </drush>
+        <drush command="pm-enable @${drush.alias}" assume="yes">
+            <param>email_testing</param>
+            <param>reroute_email</param>
+        </drush>
+    </target>
+
+    <target name="disable-testing-modules" if="env">
+        <echo>Disabling testing modules.</echo>
+        <drush command="pm-disable" assume="yes">
+            <param>email_testing</param>
+            <param>reroute_email</param>
+        </drush>
+        <drush command="pm-disable @${drush.alias}" assume="yes">
+            <param>email_testing</param>
+            <param>reroute_email</param>
+        </drush>
+
+        <echo>Uninstalling testing modules.</echo>
+        <drush command="pm-uninstall" assume="yes">
+            <param>email_testing</param>
+            <param>reroute_email</param>
+        </drush>
+        <drush command="pm-uninstall @${drush.alias}" assume="yes">
+            <param>email_testing</param>
+            <param>reroute_email</param>
+        </drush>
+    </target>
+
+    <target name="enable-migrate-modules" if="env">
+        <echo>Enabling migrate modules.</echo>
+        <drush command="pm-enable" assume="yes">
+            <param>migrate_extras</param>
+            <param>migrate_ui</param>
+            <param>migrate</param>
+        </drush>
+    </target>
+
+    <target name="disable-migrate-modules" if="env">
+        <echo>Disabling migrate modules.</echo>
+        <drush command="pm-disable" assume="yes">
+            <param>migrate_extras</param>
+            <param>migrate_ui</param>
+            <param>migrate</param>
+        </drush>
+
+        <echo>Uninstalling migrate modules.</echo>
+        <drush command="pm-uninstall" assume="yes">
+            <param>migrate_extras</param>
+            <param>migrate_ui</param>
+            <param>migrate</param>
+        </drush>
+    </target>
+</project>

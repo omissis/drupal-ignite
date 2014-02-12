@@ -1,0 +1,54 @@
+name = MyCompany Mysite
+description = Foo Bar Baz
+version = 1.0-dev
+core = 7.x
+
+dependencies[] = block
+dependencies[] = boxes
+dependencies[] = comment
+dependencies[] = context
+dependencies[] = contextual
+dependencies[] = ctools
+dependencies[] = date
+dependencies[] = date_api
+dependencies[] = date_popup
+dependencies[] = date_views
+dependencies[] = delta
+dependencies[] = entity
+dependencies[] = entity_token
+dependencies[] = features
+dependencies[] = field
+dependencies[] = field_permissions
+dependencies[] = field_sql_storage
+dependencies[] = file
+dependencies[] = file_entity
+dependencies[] = filter
+dependencies[] = image
+dependencies[] = libraries
+dependencies[] = list
+dependencies[] = locale
+dependencies[] = media
+dependencies[] = menu
+dependencies[] = node
+dependencies[] = number
+dependencies[] = options
+dependencies[] = overlay
+dependencies[] = path
+dependencies[] = references
+dependencies[] = rules
+dependencies[] = search
+dependencies[] = shortcut
+dependencies[] = strongarm
+dependencies[] = system
+dependencies[] = taxonomy
+dependencies[] = text
+dependencies[] = token
+dependencies[] = toolbar
+dependencies[] = update
+dependencies[] = user
+dependencies[] = views
+dependencies[] = wysiwyg
+
+; Custom features
+
+; Custom modules
