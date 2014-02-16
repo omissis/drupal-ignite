@@ -3,6 +3,51 @@
 export LC_CTYPE=C
 export LANG=C
 
+ARGS=`getopt -l "vendor:,name:,webroot:,help" -o "h" -- "$@"`
+
+#Bad arguments
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+# A little magic
+eval set -- "$ARGS"
+
+# Now go through all the options
+while [ $# -ge 1 ]; do
+    case "$1" in
+        --vendor)
+            VENDOR=$2
+            shift
+            ;;
+        --name)
+            NAME=$2
+            shift
+            ;;
+        --webroot)
+            WEBROOT_DIR=$2
+            shift
+            ;;
+        -h|--help)
+            echo "$(basename "$0") [-h] [--vendor --name --webroot] -- Drupal Ignite installation script.
+
+where:
+    -h  show this help text
+    --vendor  set the value for site's vendor (eg: acme)
+    --name  set the value for site's name (eg: demo)
+    --webroot  set the value for vendor (eg: /var/www/acme/demo)"
+            exit 0
+            ;;
+        --)
+            shift
+            break
+            ;;
+    esac
+
+    shift
+done
+
+# Print header
 echo
 echo "=========================="
 echo "Drupal Ignite Setup Script"
