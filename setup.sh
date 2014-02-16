@@ -3,7 +3,7 @@
 export LC_CTYPE=C
 export LANG=C
 
-ARGS=`getopt -l "vendor:,name:,webroot:,help" -o "h" -- "$@"`
+ARGS=`getopt -l "help,name:,tld:,vendor:,docroot:" -o "h" -- "$@"`
 
 #Bad arguments
 if [ $? -ne 0 ]; then
@@ -16,26 +16,31 @@ eval set -- "$ARGS"
 # Now go through all the options
 while [ $# -ge 1 ]; do
     case "$1" in
-        --vendor)
-            VENDOR=$2
-            shift
-            ;;
         --name)
             NAME=$2
             shift
             ;;
-        --webroot)
-            WEBROOT_DIR=$2
+        --tld)
+            TLD=$2
+            shift
+            ;;
+        --vendor)
+            VENDOR=$2
+            shift
+            ;;
+        --docroot)
+            DOCUMENT_ROOT=$2
             shift
             ;;
         -h|--help)
-            echo "$(basename "$0") [-h] [--vendor --name --webroot] -- Drupal Ignite installation script.
+            echo "$(basename "$0") [-h] [--docroot --name --tld --vendor] -- Drupal Ignite installation script.
 
 where:
-    -h  show this help text
-    --vendor  set the value for site's vendor (eg: acme)
-    --name  set the value for site's name (eg: demo)
-    --webroot  set the value for vendor (eg: /var/www/acme/demo)"
+    --docroot  set the value for site's document root (eg: /var/www/acme/demo)
+    --name     set the value for site's name (eg: demo)
+    --tld      top level domain to use without leading point (eg: com, org)
+    --vendor   set the value for site's vendor (eg: acme)
+    -h|--help  show this help text"
             exit 0
             ;;
         --)
@@ -70,46 +75,51 @@ done
 echo
 
 # Read site's destination directory
-while [ -z $WEBROOT_DIR ]; do
+while [ -z $DOCUMENT_ROOT ]; do
     echo "Please enter Site's Root Folder:"
-    read WEBROOT_DIR
+    read DOCUMENT_ROOT
 done
 echo
 
+# Set Top Level Domain if it hasn't been passed through Command Line
+if [ -z $TLD ]; then
+    TLD='com'
+fi
+
 # If destination folder doesn't exist, create it or exit
 # Otherwise, empty it or exit
-if [ ! -d $WEBROOT_DIR ]; then
-    while [[ ! $CREATE_WEBROOT_DIR =~ ^([yY][eE][sS]|[yY]|[nN][oO]|[nN])$ ]]; do
-        echo "Folder $WEBROOT_DIR doesn't exist, should I create it now? [y/n]"
-        read CREATE_WEBROOT_DIR
+if [ ! -d $DOCUMENT_ROOT ]; then
+    while [[ ! $CREATE_DOCUMENT_ROOT =~ ^([yY][eE][sS]|[yY]|[nN][oO]|[nN])$ ]]; do
+        echo "Folder $DOCUMENT_ROOT doesn't exist, should I create it now? [y/n]"
+        read CREATE_DOCUMENT_ROOT
     done
 
     # Exit if the user doesn't want to create the destination folder
-    if [[ $CREATE_WEBROOT_DIR =~ ^([nN][oO]|[nN])$ ]]; then
+    if [[ $CREATE_DOCUMENT_ROOT =~ ^([nN][oO]|[nN])$ ]]; then
         echo "Exiting"
         exit 1
     else
-        mkdir -p $WEBROOT_DIR
+        mkdir -p $DOCUMENT_ROOT
 
         RETVAL=$?
         if [ $RETVAL -ne 0 ]; then
-            echo "Failed creating '$WEBROOT_DIR' folder"
+            echo "Failed creating '$DOCUMENT_ROOT' folder"
             exit 1
         fi
     fi
 else
-    while [[ ! $EMPTY_WEBROOT_DIR =~ ^([yY][eE][sS]|[yY]|[nN][oO]|[nN])$ ]]; do
-        echo "Folder $WEBROOT_DIR already exists, should I empty it now? [y/n]"
-        read EMPTY_WEBROOT_DIR
+    while [[ ! $EMPTY_DOCUMENT_ROOT =~ ^([yY][eE][sS]|[yY]|[nN][oO]|[nN])$ ]]; do
+        echo "Folder $DOCUMENT_ROOT already exists, should I empty it now? [y/n]"
+        read EMPTY_DOCUMENT_ROOT
     done
 
     # Exit if the user doesn't want to empty destination folder
-    if [[ $EMPTY_WEBROOT_DIR =~ ^([nN][oO]|[nN])$ ]]; then
+    if [[ $EMPTY_DOCUMENT_ROOT =~ ^([nN][oO]|[nN])$ ]]; then
         echo "Aborted execution, exiting."
         exit 1
     else
-        if [ -e $WEBROOT_DIR ]; then
-            rm -rf $WEBROOT_DIR/*
+        if [ -e $DOCUMENT_ROOT ]; then
+            rm -rf $DOCUMENT_ROOT/*
         fi
     fi
 fi
@@ -123,9 +133,12 @@ TMP_DIR=`mktemp -d ./drupal-ignite-core-XXXXXX`
 # Copy template to temporary directory for processing
 cp -R $TPL_DIR/* $TMP_DIR/
 
-# Replace vendor name and site name inside files
+# Replace strings inside files
+# Using "|" instead of "/" to avoid issues with slashes in docroot path
+find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's|__docroot__|'$DOCUMENT_ROOT'|g'
 find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__vendor__/'$VENDOR'/g'
 find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__site__/'$NAME'/g'
+find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__tld__/'$TLD'/g'
 
 # Rename files and directories to replace vendor name and site name
 FILES=`find $TMP_DIR -name "*__vendor__*" -o -name "*__site__*"`
@@ -148,7 +161,7 @@ while [[ -n $FILES ]]; do
 done
 
 # Copy processed files and directories to destination folder
-cp -R $TMP_DIR/* $WEBROOT_DIR/
+cp -R $TMP_DIR/* $DOCUMENT_ROOT/
 
 # Clean up temporary directory
 if [ -e $TMP_DIR ]; then

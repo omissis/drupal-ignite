@@ -9,7 +9,7 @@ $home_directory = __DIR__ . '/../../../';
 
 // Create aliases.
 $aliases['myproject.loc'] = array(
-  'uri' => 'loc.__site__.com',
+  'uri' => 'loc.__site__.__tld__',
   'root' => $home_directory . '/Sites/__vendor__/__site__',
   'db-url' => 'mysql://__site___loc:__site___loc@localhost/__site___loc',
   'path-aliases' => array(
@@ -26,9 +26,9 @@ $aliases['myproject.loc'] = array(
   'command-specific' => array(
     'site-install' => array(
       'site-name' => 'My Site',
-      'site-mail' => 'info@loc.__site__.com',
+      'site-mail' => 'info@loc.__site__.__tld__',
       'db-url'    => 'mysql://__site___loc:__site___loc@127.0.0.1/__site__',
-      'account-mail' => 'info@loc.__site__.com',
+      'account-mail' => 'info@loc.__site__.__tld__',
       'account-name' => 'admin',
       'account-pass' => 'admin',
     ),
@@ -36,9 +36,9 @@ $aliases['myproject.loc'] = array(
 );
 
 $aliases['myproject.dev'] = array(
-  'uri' => 'dev.__site__.__vendor__.com',
-  'root' => '/var/www/dev.__site__.__vendor__.com',
-  'remote-host' => 'dev.__site__.__vendor__.com',
+  'uri' => 'dev.__site__.__vendor__.__tld__',
+  'root' => '/var/www/dev.__site__.__vendor__.__tld__',
+  'remote-host' => 'dev.__site__.__vendor__.__tld__',
   'remote-user' => 'root',
   'command-specific' => array(
     'sql-sync' => array(
@@ -48,9 +48,9 @@ $aliases['myproject.dev'] = array(
 );
 
 $aliases['myproject.stage'] = array(
-  'uri' => 'stage.__site__.__vendor__.com',
-  'root' => '/var/www/stage.__site__.__vendor__.com',
-  'remote-host' => 'stage.__site__.__vendor__.com',
+  'uri' => 'stage.__site__.__vendor__.__tld__',
+  'root' => '/var/www/stage.__site__.__vendor__.__tld__',
+  'remote-host' => 'stage.__site__.__vendor__.__tld__',
   'remote-user' => 'root',
   'command-specific' => array(
     'sql-sync' => array(
