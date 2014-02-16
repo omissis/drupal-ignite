@@ -46,6 +46,12 @@ if [ ! -d $WEBROOT_DIR ]; then
         exit 1
     else
         mkdir -p $WEBROOT_DIR
+
+        RETVAL=$?
+        if [ $RETVAL -ne 0 ]; then
+            echo "Failed creating '$WEBROOT_DIR' folder"
+            exit 1
+        fi
     fi
 else
     while [[ ! $EMPTY_WEBROOT_DIR =~ ^([yY][eE][sS]|[yY]|[nN][oO]|[nN])$ ]]; do
