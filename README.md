@@ -42,3 +42,5 @@ Roadmap
 * remove italian as default language
 * add debug and prod environment
 * add support for javascript testing frameworks
+* add support for copying vhost file into apache config directory
+* add platform/configuration detection to better target copies
