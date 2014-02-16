@@ -47,7 +47,6 @@ where:
     shift
 done
 
-# Print header
 echo
 echo "=========================="
 echo "Drupal Ignite Setup Script"
@@ -106,10 +105,12 @@ else
 
     # Exit if the user doesn't want to empty destination folder
     if [[ $EMPTY_WEBROOT_DIR =~ ^([nN][oO]|[nN])$ ]]; then
-        echo "Exiting"
+        echo "Aborted execution, exiting."
         exit 1
     else
-        rm -rf $WEBROOT_DIR
+        if [ -e $WEBROOT_DIR ]; then
+            rm -rf $WEBROOT_DIR/*
+        fi
     fi
 fi
 echo
@@ -120,18 +121,18 @@ TPL_DIR="./template"
 TMP_DIR=`mktemp -d ./drupal-ignite-core-XXXXXX`
 
 # Copy template to temporary directory for processing
-cp -R $TPL_DIR/ $TMP_DIR/
+cp -R $TPL_DIR/* $TMP_DIR/
 
 # Replace vendor name and site name inside files
-find $TMP_DIR -type f -print0 | xargs -0 sed -i "" 's/__vendor__/'$VENDOR'/g'
-find $TMP_DIR -type f -print0 | xargs -0 sed -i "" 's/__site__/'$NAME'/g'
+find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__vendor__/'$VENDOR'/g'
+find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__site__/'$NAME'/g'
 
 # Rename files and directories to replace vendor name and site name
-FILES=`find $TMP_DIR -name "*vendor*" -o -name "*site*"`
+FILES=`find $TMP_DIR -name "*__vendor__*" -o -name "*__site__*"`
 
 while [[ -n $FILES ]]; do
     for FILE in $FILES; do
-        NEW_FILE=`echo $FILE | sed -e 's/vendor/'$VENDOR'/g' | sed -e 's/site/'$NAME'/g'`
+        NEW_FILE=`echo $FILE | sed -e 's/__vendor__/'$VENDOR'/g' | sed -e 's/__site__/'$NAME'/g'`
         NEW_FILE_DIR=$(dirname $NEW_FILE)
 
         if [ ! -d $NEW_FILE_DIR ]; then
@@ -143,14 +144,16 @@ while [[ -n $FILES ]]; do
         fi
     done
 
-    FILES=`find $TMP_DIR -name "*vendor*" -o -name "*site*"`
+    FILES=`find $TMP_DIR -name "*__vendor__*" -o -name "*__site__*"`
 done
 
 # Copy processed files and directories to destination folder
-cp -R $TMP_DIR/ $WEBROOT_DIR/
+cp -R $TMP_DIR/* $WEBROOT_DIR/
 
 # Clean up temporary directory
-rm -rf $TMP_DIR
+if [ -e $TMP_DIR ]; then
+    rm -rf $TMP_DIR
+fi
 
 # Goodbye
 echo
