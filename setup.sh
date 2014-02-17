@@ -3,7 +3,7 @@
 export LC_CTYPE=C
 export LANG=C
 
-ARGS=`getopt -l "help,name:,tld:,vendor:,docroot:" -o "h" -- "$@"`
+# ARGS=`getopt -l "help,name:,tld:,vendor:,docroot:" -o "h" -- "$@"`
 
 #Bad arguments
 if [ $? -ne 0 ]; then
@@ -11,7 +11,8 @@ if [ $? -ne 0 ]; then
 fi
 
 # A little magic
-eval set -- "$ARGS"
+# eval set -- "$ARGS"
+# unset ARGS
 
 # Now go through all the options
 while [ $# -ge 1 ]; do
@@ -20,19 +21,35 @@ while [ $# -ge 1 ]; do
             NAME=$2
             shift
             ;;
+         --name=*)
+            NAME=${1#*=}        # Delete everything up till "="
+            shift
+            ;;
         --tld)
             TLD=$2
+            shift
+            ;;
+         --tld=*)
+            TLD=${1#*=}        # Delete everything up till "="
             shift
             ;;
         --vendor)
             VENDOR=$2
             shift
             ;;
+         --vendor=*)
+            VENDOR=${1#*=}        # Delete everything up till "="
+            shift
+            ;;
         --docroot)
             DOCUMENT_ROOT=$2
             shift
             ;;
-        -h|--help)
+         --docroot=*)
+            DOCUMENT_ROOT=${1#*=}        # Delete everything up till "="
+            shift
+            ;;
+        -h|--help|-\?)
             echo "$(basename "$0") [-h] [--docroot --name --tld --vendor] -- Drupal Ignite installation script.
 
 where:
@@ -43,13 +60,10 @@ where:
     -h|--help  show this help text"
             exit 0
             ;;
-        --)
+        *)
             shift
-            break
             ;;
     esac
-
-    shift
 done
 
 echo
@@ -135,10 +149,10 @@ cp -R $TPL_DIR/* $TMP_DIR/
 
 # Replace strings inside files
 # Using "|" instead of "/" to avoid issues with slashes in docroot path
-find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's|__docroot__|'$DOCUMENT_ROOT'|g'
-find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__vendor__/'$VENDOR'/g'
-find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__site__/'$NAME'/g'
-find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__tld__/'$TLD'/g'
+find $TMP_DIR -type f -print0 | xargs -0 sed -e 's|__docroot__|'$DOCUMENT_ROOT'|g' -i ""
+find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__vendor__/'$VENDOR'/g' -i ""
+find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__site__/'$NAME'/g' -i ""
+find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__tld__/'$TLD'/g' -i ""
 
 # Rename files and directories to replace vendor name and site name
 FILES=`find $TMP_DIR -name "*__vendor__*" -o -name "*__site__*"`
