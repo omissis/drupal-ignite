@@ -8,7 +8,7 @@
 $home_directory = __DIR__ . '/../../../';
 
 // Create aliases.
-$aliases['myproject.loc'] = array(
+$aliases['__site__.loc'] = array(
   'uri' => 'loc.__site__.__tld__',
   'root' => $home_directory . '/Sites/__vendor__/__site__',
   'db-url' => 'mysql://__site___loc:__site___loc@localhost/__site___loc',
@@ -25,7 +25,7 @@ $aliases['myproject.loc'] = array(
   ),
   'command-specific' => array(
     'site-install' => array(
-      'site-name' => 'My Site',
+      'site-name' => ucfirst('__site__'),
       'site-mail' => 'info@loc.__site__.__tld__',
       'db-url'    => 'mysql://__site___loc:__site___loc@127.0.0.1/__site__',
       'account-mail' => 'info@loc.__site__.__tld__',
@@ -35,7 +35,7 @@ $aliases['myproject.loc'] = array(
   ),
 );
 
-$aliases['myproject.dev'] = array(
+$aliases['__site__.dev'] = array(
   'uri' => 'dev.__site__.__vendor__.__tld__',
   'root' => '/var/www/dev.__site__.__vendor__.__tld__',
   'remote-host' => 'dev.__site__.__vendor__.__tld__',
@@ -47,7 +47,7 @@ $aliases['myproject.dev'] = array(
   ),
 );
 
-$aliases['myproject.stage'] = array(
+$aliases['__site__.stage'] = array(
   'uri' => 'stage.__site__.__vendor__.__tld__',
   'root' => '/var/www/stage.__site__.__vendor__.__tld__',
   'remote-host' => 'stage.__site__.__vendor__.__tld__',
