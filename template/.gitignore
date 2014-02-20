@@ -32,7 +32,7 @@ sites/*/settings*.php
 sites/*/files
 
 # Third party libraries and tools #
-/bin
+/bin/*
 /reports/*
 /vendor
 composer.lock
