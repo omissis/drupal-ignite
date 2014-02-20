@@ -1,27 +1,26 @@
 #!/bin/bash
 
-export LC_CTYPE=C
-export LANG=C
-
-# ARGS=`getopt -l "help,name:,tld:,vendor:,docroot:" -o "h" -- "$@"`
-
 #Bad arguments
 if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# A little magic
-# eval set -- "$ARGS"
-# unset ARGS
-
 # Now go through all the options
 while [ $# -ge 1 ]; do
     case "$1" in
+        --docroot)
+            DOCUMENT_ROOT=$2
+            shift
+            ;;
+        --docroot=*)
+            DOCUMENT_ROOT=${1#*=}        # Delete everything up till "="
+            shift
+            ;;
         --name)
             NAME=$2
             shift
             ;;
-         --name=*)
+        --name=*)
             NAME=${1#*=}        # Delete everything up till "="
             shift
             ;;
@@ -29,7 +28,7 @@ while [ $# -ge 1 ]; do
             TLD=$2
             shift
             ;;
-         --tld=*)
+        --tld=*)
             TLD=${1#*=}        # Delete everything up till "="
             shift
             ;;
@@ -37,16 +36,8 @@ while [ $# -ge 1 ]; do
             VENDOR=$2
             shift
             ;;
-         --vendor=*)
+        --vendor=*)
             VENDOR=${1#*=}        # Delete everything up till "="
-            shift
-            ;;
-        --docroot)
-            DOCUMENT_ROOT=$2
-            shift
-            ;;
-         --docroot=*)
-            DOCUMENT_ROOT=${1#*=}        # Delete everything up till "="
             shift
             ;;
         -h|--help|-\?)
@@ -181,6 +172,16 @@ cp -R $TMP_DIR/* $DOCUMENT_ROOT/
 if [ -e $TMP_DIR ]; then
     rm -rf $TMP_DIR
 fi
+
+cd $DOCUMENT_ROOT
+
+# Download composer
+php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=bin
+
+# Install dependencies
+php bin/composer.phar install
+
+cd -
 
 # Goodbye
 echo
