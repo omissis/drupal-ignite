@@ -1,11 +1,44 @@
 #!/bin/bash
 
-#Bad arguments
+slugify () {
+    MAX_LENGTH="${2:-48}"
+
+    SLUG="$({
+        tr '[A-Z]' '[a-z]' | tr -cs '[[:alnum:]]' '_'
+    } <<< "$1")"
+    SLUG="${SLUG##_}"
+    SLUG="${SLUG%%_}"
+    SLUG="${SLUG:0:$MAX_LENGTH}"
+
+    echo $SLUG
+}
+
+lowercase () {
+    echo $1 | tr '[:upper:]' '[:lower:]'
+}
+
+print_header () {
+    echo
+    echo "=========================="
+    echo "Drupal Ignite Setup Script"
+    echo "=========================="
+    echo
+    echo "This script will guide you into setting up your Drupal Ignite installation."
+    echo
+}
+
+print_footer () {
+    echo
+    echo "Done."
+    echo
+}
+
+# Bad arguments
 if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Now go through all the options
+# Go through all the options
 while [ $# -ge 1 ]; do
     case "$1" in
         --docroot)
@@ -16,39 +49,30 @@ while [ $# -ge 1 ]; do
             DOCUMENT_ROOT=${1#*=}        # Delete everything up till "="
             shift
             ;;
+        --domain)
+            DOMAIN=$2
+            shift
+            ;;
+        --domain=*)
+            DOMAIN=${1#*=}        # Delete everything up till "="
+            shift
+            ;;
         --name)
-            NAME=$2
+            SITE=$2
             shift
             ;;
         --name=*)
-            NAME=${1#*=}        # Delete everything up till "="
-            shift
-            ;;
-        --tld)
-            TLD=$2
-            shift
-            ;;
-        --tld=*)
-            TLD=${1#*=}        # Delete everything up till "="
-            shift
-            ;;
-        --vendor)
-            VENDOR=$2
-            shift
-            ;;
-        --vendor=*)
-            VENDOR=${1#*=}        # Delete everything up till "="
+            SITE=${1#*=}        # Delete everything up till "="
             shift
             ;;
         -h|--help|-\?)
-            echo "$(basename "$0") [-h] [--docroot --name --tld --vendor] -- Drupal Ignite installation script.
+            echo "$(basename "$0") [-h] [--docroot --domain --name] -- Drupal Ignite installation script.
 
 where:
-    --docroot  set the value for site's document root (eg: /var/www/acme/demo)
-    --name     set the value for site's name (eg: demo)
-    --tld      top level domain to use without leading point (eg: com, org)
-    --vendor   set the value for site's vendor (eg: acme)
-    -h|--help  show this help text"
+    --docroot     set the value for site's document root (eg: /var/www/acme/demo)
+    --domain      set the value for site's domain (eg: demo.acme.com)
+    --name        set the value for site's name (eg: acme demo)
+    -h|--help|-?  show this help text"
             exit 0
             ;;
         *)
@@ -57,25 +81,13 @@ where:
     esac
 done
 
-echo
-echo "=========================="
-echo "Drupal Ignite Setup Script"
-echo "=========================="
-echo
-echo "This script will guide you into setting up your Drupal Ignite installation."
-echo
-
-# Read site vendor's name
-while [ -z $VENDOR ]; do
-    echo "Please enter Site's Vendor:"
-    read VENDOR
-done
-echo
+# Print welcome header
+print_header
 
 # Read site's name
-while [ -z $NAME ]; do
+while [ -z $SITE ]; do
     echo "Please enter Site's Name:"
-    read NAME
+    read SITE
 done
 echo
 
@@ -86,10 +98,12 @@ while [ -z $DOCUMENT_ROOT ]; do
 done
 echo
 
-# Set Top Level Domain if it hasn't been passed through Command Line
-if [ -z $TLD ]; then
-    TLD='com'
-fi
+# Read site's domain
+while [ -z $DOMAIN ]; do
+    echo "Please enter Site's Domain:"
+    read DOMAIN
+done
+echo
 
 # If destination folder doesn't exist, create it or exit
 # Otherwise, empty it or exit
@@ -130,6 +144,13 @@ else
 fi
 echo
 
+# Create a safer database name
+DATABASE=`slugify $SITE`
+
+# Create a safer site name
+SITE=`lowercase $SITE`
+
+# Set template directory
 TPL_DIR="./template"
 
 # Create temporary directory
@@ -140,17 +161,17 @@ cp -R $TPL_DIR/* $TMP_DIR/
 
 # Replace strings inside files
 # Using "|" instead of "/" to avoid issues with slashes in docroot path
+find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__database__/'$DATABASE'/g' -i ""
 find $TMP_DIR -type f -print0 | xargs -0 sed -e 's|__docroot__|'$DOCUMENT_ROOT'|g' -i ""
-find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__vendor__/'$VENDOR'/g' -i ""
-find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__site__/'$NAME'/g' -i ""
-find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__tld__/'$TLD'/g' -i ""
+find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__domain__/'$DOMAIN'/g' -i ""
+find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__site__/'$SITE'/g' -i ""
 
-# Rename files and directories to replace vendor name and site name
-FILES=`find $TMP_DIR -name "*__vendor__*" -o -name "*__site__*"`
+# Rename files and directories to replace site name
+FILES=`find $TMP_DIR -name "*__site__*"`
 
 while [[ -n $FILES ]]; do
     for FILE in $FILES; do
-        NEW_FILE=`echo $FILE | sed -e 's/__vendor__/'$VENDOR'/g' | sed -e 's/__site__/'$NAME'/g'`
+        NEW_FILE=`echo $FILE | sed -e 's/__site__/'$SITE'/g'`
         NEW_FILE_DIR=$(dirname $NEW_FILE)
 
         if [ ! -d $NEW_FILE_DIR ]; then
@@ -162,7 +183,7 @@ while [[ -n $FILES ]]; do
         fi
     done
 
-    FILES=`find $TMP_DIR -name "*__vendor__*" -o -name "*__site__*"`
+    FILES=`find $TMP_DIR -name "*__site__*"`
 done
 
 # Copy processed files and directories to destination folder
@@ -173,6 +194,7 @@ if [ -e $TMP_DIR ]; then
     rm -rf $TMP_DIR
 fi
 
+# Temporarily switch to document root directory to download and execute Composer
 cd $DOCUMENT_ROOT
 
 # Download composer
@@ -181,9 +203,8 @@ php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=b
 # Install dependencies
 php bin/composer.phar install
 
+# Return back to previous directory
 cd -
 
 # Goodbye
-echo
-echo "Done."
-echo
+print_footer

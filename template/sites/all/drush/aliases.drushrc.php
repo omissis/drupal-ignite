@@ -11,10 +11,10 @@
  * and admin/admin for the website administrator username/password. YOU SHOULD CHANGE THIS.
  */
 
-$loc_db_url = 'mysql://__site___loc:__site___loc@127.0.0.1/__vendor_____site___loc';
+$loc_db_url = 'mysql://__database___loc:__database___loc@127.0.0.1/__database___loc';
 
-$aliases['__vendor__.__site__.loc'] = array(
-  'uri' => 'loc.__site__.__vendor__.__tld__',
+$aliases['__domain__.loc'] = array(
+  'uri' => 'loc.__domain__',
   'root' => '__docroot__',
   'db-url' => $loc_db_url,
   'path-aliases' => array(
@@ -31,9 +31,9 @@ $aliases['__vendor__.__site__.loc'] = array(
   'command-specific' => array(
     'site-install' => array(
       'site-name' => ucfirst('__site__'),
-      'site-mail' => 'info@loc.__site__.__vendor__.__tld__',
+      'site-mail' => 'info@loc.__domain__',
       'db-url'    => $loc_db_url,
-      'account-mail' => 'admin@loc.__site__.__vendor__.__tld__',
+      'account-mail' => 'admin@loc.__domain__',
       'account-name' => 'admin',
       'account-pass' => 'admin',
     ),
@@ -45,10 +45,10 @@ $aliases['__vendor__.__site__.loc'] = array(
  *
  * You should at least ensure 'root' path is correct.
  */
-// $aliases['__vendor__.__site__.dev'] = array(
-//   'uri' => 'dev.__site__.__vendor__.__tld__',
-//   'root' => '/var/www/__vendor__/__site__/dev',
-//   'remote-host' => 'dev.__site__.__vendor__.__tld__',
+// $aliases['__domain__.dev'] = array(
+//   'uri' => 'dev.__domain__',
+//   'root' => '/var/www/__domain__/dev',
+//   'remote-host' => 'dev.__domain__',
 //   'remote-user' => 'root',
 //   'command-specific' => array(
 //     'sql-sync' => array(
@@ -62,10 +62,10 @@ $aliases['__vendor__.__site__.loc'] = array(
  *
  * You should at least ensure 'root' path is correct.
  */
-// $aliases['__vendor__.__site__.stage'] = array(
-//   'uri' => 'stage.__site__.__vendor__.__tld__',
-//   'root' => '/var/www/__vendor__/__site__/stage',
-//   'remote-host' => 'stage.__site__.__vendor__.__tld__',
+// $aliases['__domain__.stage'] = array(
+//   'uri' => 'stage.__domain__',
+//   'root' => '/var/www/__domain__/stage',
+//   'remote-host' => 'stage.__domain__',
 //   'remote-user' => 'root',
 //   'command-specific' => array(
 //     'sql-sync' => array(
