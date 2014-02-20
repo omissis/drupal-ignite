@@ -9,17 +9,26 @@
                     "url": "http://git.drupal.org/project/phingdrushtask.git",
                     "type": "git",
                     "reference": "7.x-1.0"
-                }
+                },
+                "autoload": {
+                    "classmap": [
+                        "DrushTask.php"
+                    ]
+                },
+                "include-path": [
+                    "."
+                ]
             }
         }
     ],
     "require": {
-        "phing/phing": "2.5.0",
+        "phing/phing": "2.7.*",
         "drupal/phing-drush-task": "1.0",
-        "drupal/drupal-extension": "*"
+        "drupal/drupal-extension": "0.1.*",
+        "drush/drush": "6.2.*"
     },
     "config": {
         "bin-dir": "bin/"
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "beta"
 }
