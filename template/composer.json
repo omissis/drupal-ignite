@@ -19,12 +19,43 @@
                     "."
                 ]
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "omissis/drupalextension",
+                "version": "dev-master",
+                "source": {
+                    "url": "https://github.com/omissis/drupalextension.git",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "require": {
+                    "behat/mink": "1.5.*@stable",
+                    "behat/mink-goutte-driver": "*",
+                    "behat/mink-selenium2-driver": "*",
+                    "behat/behat": "2.5.*@stable",
+                    "behat/mink-extension": "*"
+                },
+                "require-dev": {
+                    "phpunit/phpunit": "3.7.*"
+                },
+                "autoload": {
+                    "psr-0": {
+                        "Drupal\\Component": "src/",
+                        "Drupal\\Driver": "src/",
+                        "Drupal\\Drupal": "src/",
+                        "Drupal\\Exception": "src/",
+                        "Drupal\\DrupalExtension": "src/"
+                    }
+                }
+            }
         }
     ],
     "require": {
         "phing/phing": "2.7.*",
         "drupal/phing-drush-task": "1.0",
-        "drupal/drupal-extension": "0.1.*",
+        "omissis/drupalextension": "dev-master",
         "drush/drush": "6.2.*",
         "squizlabs/php_codesniffer": "1.5.*",
         "phpmd/phpmd": "1.5.*",
