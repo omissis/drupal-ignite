@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="__site__" default="dummy">
+<project name="__name__" default="dummy">
+    <property name="drush.bin" value="bin/drush"/>
     <taskdef name="drush" classname="DrushTask" />
 
     <!-- General targets -->
@@ -19,7 +20,7 @@
         <echo>Local application build done.</echo>
     </target>
 
-    <target name="loc-test" depends="loc-prop,app-test">
+    <target name="loc-test" depends="loc-prop,composer-optimize,app-test">
         <echo>Test executed.</echo>
     </target>
 
@@ -80,6 +81,7 @@
         <chmod file="sites/default/files/private" mode="0755" verbose="true" />
 
         <phingcall target="drush-make" />
+        <phingcall target="composer-optimize" />
     </target>
 
     <target name="app-configure-database" if="env">
@@ -153,13 +155,6 @@
         <delete dir="bin" includeemptydirs="true" verbose="true" failonerror="false" />
         <mkdir dir="bin" />
 
-        <echo>Downloading dependencies using composer.</echo>
-        <exec command="curl -s http://getcomposer.org/installer | php" dir="bin" checkreturn="true"/>
-        <exec command="php bin/composer.phar install --prefer-dist" dir="." checkreturn="true"/>
-
-        <echo>Dumping all the classes for the autoloader.</echo>
-        <exec command="php bin/composer.phar dump-autoload -o" dir="." checkreturn="true"/>
-
         <phingcall target="enable-testing-modules" />
 
         <echo>Setting WatchdogMailSystem as default mailing system for @{drush.alias}</echo>
@@ -187,6 +182,11 @@
     </target>
 
     <!-- Helper targets -->
+
+    <target name="composer-optimize" if="env">
+        <echo>Dumping all the classes for the autoloader.</echo>
+        <exec command="php bin/composer.phar dump-autoload -o" dir="." checkreturn="true"/>
+    </target>
 
     <target name="drush-site-install" if="env">
         <echo>Installing site.</echo>
