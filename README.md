@@ -33,6 +33,13 @@ Contents
 * a _test_ directory, containing the phpunit's bootstrap file and some utility classes for testing
 
 
+Requirements
+------------
+* A Bash-compatible shell
+* PHP 5.3.3+
+* PHP extensions: json, curl
+
+
 Roadmap
 -------
 
