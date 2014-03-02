@@ -144,6 +144,9 @@ else
 fi
 echo
 
+# Operating system
+OS=`uname -s`
+
 # Create a safe site name
 SAFE_NAME=`slugify $NAME`
 
@@ -157,11 +160,22 @@ TMP_DIR=`mktemp -d ./drupal-ignite-core-XXXXXX`
 cp -R $TPL_DIR/* $TMP_DIR/
 
 # Replace strings inside files
-# Using "|" instead of "/" to avoid issues with slashes in docroot path
-find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__originalname__/'$NAME'/g' -i ""
-find $TMP_DIR -type f -print0 | xargs -0 sed -e 's|__docroot__|'$DOCUMENT_ROOT'|g' -i ""
-find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__domain__/'$DOMAIN'/g' -i ""
-find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__name__/'$SAFE_NAME'/g' -i ""
+# Using "|" instead of "/" to avoid issues with slashes in docroot path
+# Got to distinguish between GNU sed and BSD sed.
+case $OS in
+    Darwin)
+        find $TMP_DIR -type f -print0 | xargs -0 sed -i "" -e 's/__originalname__/'$NAME'/g'
+        find $TMP_DIR -type f -print0 | xargs -0 sed -i "" -e 's|__docroot__|'$DOCUMENT_ROOT'|g'
+        find $TMP_DIR -type f -print0 | xargs -0 sed -i "" -e 's/__domain__/'$DOMAIN'/g'
+        find $TMP_DIR -type f -print0 | xargs -0 sed -i "" -e 's/__name__/'$SAFE_NAME'/g'
+    ;;
+    *)
+        find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__originalname__/'$NAME'/g'
+        find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's|__docroot__|'$DOCUMENT_ROOT'|g'
+        find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__domain__/'$DOMAIN'/g'
+        find $TMP_DIR -type f -print0 | xargs -0 sed -i"" -e 's/__name__/'$SAFE_NAME'/g'
+    ;;
+esac
 
 # Rename files and directories to replace site name
 FILES=`find $TMP_DIR -name "*__name__*"`
