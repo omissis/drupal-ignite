@@ -25,7 +25,10 @@
         "phing/phing": "2.7.*",
         "drupal/phing-drush-task": "1.0",
         "drupal/drupal-extension": "0.1.*",
-        "drush/drush": "6.2.*"
+        "drush/drush": "6.2.*",
+        "squizlabs/php_codesniffer": "1.5.*",
+        "phpmd/phpmd": "1.5.*",
+        "drupal/coder": "7.2.*"
     },
     "config": {
         "bin-dir": "bin/"
