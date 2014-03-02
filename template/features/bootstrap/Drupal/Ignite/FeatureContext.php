@@ -1,25 +1,19 @@
 <?php
 
+namespace Drupal\Ignite;
+
 use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Behat\Event\FeatureEvent;
 
-require 'vendor/autoload.php';
-
-/**
- * Features context for custom step-definitions.
- *
- * @todo we are duplicating code from Behat's FeatureContext here for the
- * purposes of testing since we can't easily run that as a subcontext due to
- * naming conflicts.
- */
 class FeatureContext extends DrupalContext
 {
     /**
      * Initialize the needed step definitions for subcontext testing.
      */
-    public function __construct(array $parameters)
+    public function __construct(array $parameters = array())
     {
         if (isset($parameters['username'])) {
             $this->username = $parameters['username'];
@@ -30,9 +24,8 @@ class FeatureContext extends DrupalContext
         if (isset($parameters['requires'])) {
             $this->requires = $parameters['requires'];
         }
-        $this->useContext('behat_feature_context', new BehatFeatureContext());
+        $this->useContext('ignite_email_context', new EmailContext());
     }
-
 
     /**
      * @BeforeScenario
@@ -87,7 +80,7 @@ class FeatureContext extends DrupalContext
             'pass' => $password,
             'role' => 'authenticated user',
         );
-        $user->mail = "{$user->name}@example.com";
+        $user->mail = "{$user->name}@drupal-ci.com";
 
         $this->users[] = $this->user = $user;
 
@@ -298,11 +291,11 @@ class FeatureContext extends DrupalContext
             throw new \Exception('Tried to login without a user.');
         }
 
-        $this->getSession()->visit($this->locatePath('/user'));
+        $this->getSession()->visit($this->locatePath('/user/login'));
         $element = $this->getSession()->getPage();
-        $element->fillField('Nome utente', $this->user->name);
+        $element->fillField('Username', $this->user->name);
         $element->fillField('Password', $this->user->pass);
-        $submit = $element->findButton('Accedi');
+        $submit = $element->findButton('Log in');
         if (empty($submit)) {
             throw new \Exception(sprintf("No submit button at %s", $this->getSession()->getCurrentUrl()));
         }
@@ -347,14 +340,16 @@ class FeatureContext extends DrupalContext
             $wheres[] = "type='$type'";
         }
         if (!empty($username)) {
-            $userInfo = $this->getDriver()->userInformation($username);
+            $userInfo = $this->getUserInformation($username);
             $uid = $userInfo['id'];
             $wheres[] = "uid='$uid'";
         }
 
-        $arguments = sprintf(
-            '"SELECT nid FROM node %s ORDER BY created DESC LIMIT 1"',
-            count($wheres) ? 'WHERE ' . implode(' AND ', $wheres) : ''
+        $arguments = array(
+            sprintf(
+                '"SELECT nid FROM node %s ORDER BY created DESC LIMIT 1"',
+                count($wheres) ? 'WHERE ' . implode(' AND ', $wheres) : ''
+            )
         );
 
         $result = $this->getDriver()->drush('sql-query', $arguments);
@@ -364,122 +359,25 @@ class FeatureContext extends DrupalContext
         return intval($rows[1]);
     }
 
-    /******************************************************************************************************************/
-    /*********************************************** MAIL METHODS *****************************************************/
-    /******************************************************************************************************************/
-
     /**
-     * @BeforeScenario @mail
+     * Implements missing drivers' missing userInformation() method.
      */
-    public function setUpMailScenario()
-    {
-        // save the default mailing system
-        $this->defaultMailSystem = variable_get('mail_system');
+    protected function getUserInformation($username) {
+        $arguments = array(
+          "\"$username\"",
+        );
+        $options = array();
 
-        // set the secoval debug mailing system
-        variable_set('mail_system', array('default-system' => 'WatchdogMailSystem'));
+        $result = $this->getDriver()->drush('user-information', $arguments, $options);
 
-        // clear the watchdog table
-        $this->clearWatchdog();
-    }
+        $rows = explode("\r\n", trim($result));
+        $fields = array();
 
-    /**
-     * @AfterScenario @mail
-     */
-    public function tearDownMailScenario()
-    {
-        // reset the default mailing system
-        variable_set('mail_system', $this->defaultMailSystem);
-    }
-
-    /**
-     * @Given /^the email message with subject "([^"]*)" was sent to the following email addresses:$/
-     */
-    public function wasMessageSentToEmails($subject, array $emails)
-    {
-        $sentEmails = $this->getSentEmails();
-        $subject = sprintf($subject, $this->getIdOfTheLatestNode());
-
-        foreach ($sentEmails as $sentEmail) {
-            if (false === strstr($sentEmail['message'], $subject)) {
-                throw new \Exception(sprintf('subject "%s" not found in "%s"', $subject, $sentEmail['message']));
-            }
-            $found = false;
-            foreach ($emails as $email) {
-                if (false !== strstr($sentEmail['message'], $email)) {
-                    $found = true;
-                    break;
-                }
-            }
-            if (false === $found) {
-                throw new \Exception(
-                    sprintf('email has not been sent to any address in the list. Message:"', $sentEmail['message'])
-                );
-            }
-        }
-    }
-
-    /**
-     * @Given /^a total of (\d+) emails have been sent$/
-     */
-    public function countSentEmails($emailCount)
-    {
-        $sentEmails = $this->getSentEmails();
-
-        if (count($sentEmails) != $emailCount) {
-            $matches = array();
-            foreach ($sentEmails as $sentEmail) {
-                $start = strpos($sentEmail['message'], 'Originally to: ') + strlen('Originally to: ');
-                $end = strpos($sentEmail['message'], '\\n', $start);
-                $matches[] = substr($sentEmail['message'], $start, $end - $start);
-            }
-            throw new \Exception(
-                sprintf(
-                    '%d emails have been sent instead of %d. Found emails: %s.',
-                    count($sentEmails),
-                    $emailCount,
-                    var_export($matches, true)
-                )
-            );
-        }
-    }
-
-    /**
-     * @Transform /^table:email$/
-     */
-    public function castEmailsTable(TableNode $emailsTable)
-    {
-        $emails = array();
-        foreach ($emailsTable->getHash() as $emailHash) {
-            $emails[] = $emailHash['email'];
+        foreach ($rows as $rid => $row) {
+            $field = explode(':', $row);
+            $fields[strtolower(trim(str_replace('User ', '', $field[0])))] = trim($field[1]);
         }
 
-        return $emails;
-    }
-
-    protected function getSentEmails()
-    {
-        $query = '"SELECT * FROM watchdog WHERE type = \'%s\' AND severity = %d"';
-        $type = 'email_testing';
-        $severity = WATCHDOG_DEBUG;
-        $arguments = array(sprintf($query, $type, $severity));
-
-        $result = $this->getDriver()->drush('sql-query', $arguments);
-
-        $rows = explode("\n", trim($result));
-
-        $columnNames = array_shift($rows);
-        $columnNames = explode("\t", trim($columnNames));
-
-        foreach ($rows as $key => $row) {
-            $rows[$key] = array_combine($columnNames, explode("\t", trim($row)));
-        }
-
-        return $rows;
-    }
-
-    protected function clearWatchdog()
-    {
-        return $this->getDriver()->drush('sql-query', array('"TRUNCATE TABLE watchdog"'));
+        return $fields;
     }
 }

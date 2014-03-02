@@ -1,40 +1,32 @@
 default:
   context:
-    class: FeatureContext
-    parameters:
-      username: ${destination.http.user}
-      password: ${destination.http.pass}
+    class: Drupal\Ignite\FeatureContext
+    parameters: ~
+      # username: ${destination.http.user}
+      # password: ${destination.http.pass}
       # requires:
         # - email_testing
   paths:
     features: 'features'
   extensions:
     Behat\MinkExtension\Extension:
-      base_url: 'http://${domain}'
-      files_path: '${project.basedir}/features/files'
+      base_url: 'http://__domain__'
+      files_path: 'features/files'
       goutte: ~
       selenium2: ~
     Drupal\DrupalExtension\Extension:
       blackbox: ~
-      drupal_api: 'drush'
-      drupal:
-        drupal_root: .
       drush:
-        alias: ${drush.alias}
+        alias: __name__.loc
+        binary: 'bin/drush'
       region_map:
-        # Site Theme (My Site)
-        ## zone header
-        region_header_first: '#region-header-first'
-        region_header_second: '#region-header-second'
-
-        ## zone menu
-        region_menu: '#region-menu'
-        region_search: '#region-search'
-
-        ## zone content
-        region_content: "#region-content"
-        region_issue_comment_form: "#block-commentform-commentform"
-        region_right_sidebar: "#region-sidebar-second"
+        # Current Theme
+        menu: "#main-menu"
+        content: "#content"
+        footer: "#footer"
+        left header: "#header-left"
+        right header: "#header-right"
+        right sidebar: "#aside-region"
 
         # Admin Theme (Seven)
         admin_region_branding: '#branding'
