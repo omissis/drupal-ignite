@@ -58,11 +58,11 @@ while [ $# -ge 1 ]; do
             shift
             ;;
         --name)
-            SITE=$2
+            NAME=$2
             shift
             ;;
         --name=*)
-            SITE=${1#*=}        # Delete everything up till "="
+            NAME=${1#*=}        # Delete everything up till "="
             shift
             ;;
         -h|--help|-\?)
@@ -85,9 +85,9 @@ done
 print_header
 
 # Read site's name
-while [ -z $SITE ]; do
+while [ -z $NAME ]; do
     echo "Please enter Site's Name:"
-    read SITE
+    read NAME
 done
 echo
 
@@ -144,11 +144,8 @@ else
 fi
 echo
 
-# Create a safer database name
-DATABASE=`slugify $SITE`
-
-# Create a safer site name
-SITE=`lowercase $SITE`
+# Create a safe site name
+SAFE_NAME=`slugify $NAME`
 
 # Set template directory
 TPL_DIR="./template"
@@ -161,17 +158,17 @@ cp -R $TPL_DIR/* $TMP_DIR/
 
 # Replace strings inside files
 # Using "|" instead of "/" to avoid issues with slashes in docroot path
-find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__database__/'$DATABASE'/g' -i ""
+find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__originalname__/'$NAME'/g' -i ""
 find $TMP_DIR -type f -print0 | xargs -0 sed -e 's|__docroot__|'$DOCUMENT_ROOT'|g' -i ""
 find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__domain__/'$DOMAIN'/g' -i ""
-find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__site__/'$SITE'/g' -i ""
+find $TMP_DIR -type f -print0 | xargs -0 sed -e 's/__name__/'$SAFE_NAME'/g' -i ""
 
 # Rename files and directories to replace site name
-FILES=`find $TMP_DIR -name "*__site__*"`
+FILES=`find $TMP_DIR -name "*__name__*"`
 
 while [[ -n $FILES ]]; do
     for FILE in $FILES; do
-        NEW_FILE=`echo $FILE | sed -e 's/__site__/'$SITE'/g'`
+        NEW_FILE=`echo $FILE | sed -e 's/__name__/'$SAFE_NAME'/g'`
         NEW_FILE_DIR=$(dirname $NEW_FILE)
 
         if [ ! -d $NEW_FILE_DIR ]; then
@@ -183,7 +180,7 @@ while [[ -n $FILES ]]; do
         fi
     done
 
-    FILES=`find $TMP_DIR -name "*__site__*"`
+    FILES=`find $TMP_DIR -name "*__name__*"`
 done
 
 # Copy processed files and directories to destination folder
@@ -201,7 +198,7 @@ cd $DOCUMENT_ROOT
 php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=bin
 
 # Install dependencies
-php bin/composer.phar install
+php bin/composer.phar install --prefer-dist --verbose
 
 # Return back to previous directory
 cd -

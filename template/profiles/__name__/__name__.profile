@@ -7,9 +7,9 @@
 /**
  * Implements hook_install_tasks()
  */
-function __site___install_tasks() {
+function __name___install_tasks() {
   return array(
-    '__site___configure_site_features' => array(
+    '__name___configure_site_features' => array(
       'display_name' => st('Configure site features'),
     ),
   );
@@ -18,7 +18,7 @@ function __site___install_tasks() {
 /**
  * Implements hook_install_tasks() callback
  */
-function __site___configure_site_features() {
+function __name___configure_site_features() {
   // Revert features
   $features = features_get_features();
   foreach ($features as $name => $feature) {

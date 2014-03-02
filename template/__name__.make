@@ -11,31 +11,31 @@ projects[boxes][subdir] = "contrib"
 projects[boxes][version] = "1.1"
 
 projects[ctools][subdir] = "contrib"
-projects[ctools][version] = "1.3"
+projects[ctools][version] = "1.4"
 
 projects[context][subdir] = "contrib"
-projects[context][version] = "3.0-beta7"
+projects[context][version] = "3.2"
 
 projects[date][subdir] = "contrib"
-projects[date][version] = "2.6"
+projects[date][version] = "2.7"
 
 projects[entity][subdir] = "contrib"
-projects[entity][version] = "1.2"
+projects[entity][version] = "1.3"
 
 projects[entitycache][subdir] = "contrib"
 projects[entitycache][version] = "1.1"
 
 projects[features][subdir] = "contrib"
-projects[features][version] = "2.0-rc2"
+projects[features][version] = "2.0"
 
 projects[libraries][subdir] = "contrib"
-projects[libraries][version] = "2.1"
+projects[libraries][version] = "2.2"
 
 projects[file_entity][subdir] = "contrib"
-projects[file_entity][version] = "2.0-alpha1"
+projects[file_entity][version] = "2.0-alpha3"
 
 projects[migrate][subdir] = "contrib"
-projects[migrate][version] = "2.6-rc1"
+projects[migrate][version] = "2.5"
 
 projects[migrate_extras][subdir] = "contrib"
 projects[migrate_extras][version] = "2.5"
@@ -44,7 +44,7 @@ projects[references][subdir] = "contrib"
 projects[references][version] = "2.1"
 
 projects[rules][subdir] = "contrib"
-projects[rules][version] = "2.3"
+projects[rules][version] = "2.6"
 
 projects[strongarm][subdir] = "contrib"
 projects[strongarm][version] = "2.0"
@@ -72,8 +72,9 @@ projects[masquerade][subdir] = "devel"
 projects[masquerade][version] = "1.0-rc5"
 
 ; Themes
-projects[omega][version] = "4.0-beta6"
-projects[rubik][version] = "4.0-beta8"
+;projects[omega][version] = "4.0-beta6"
+projects[tao][version] = "3.0-beta4"
+projects[rubik][version] = "4.0-rc1"
 
 ; Libraries
 ;; CKEditor

@@ -11,9 +11,9 @@
  * and admin/admin for the website administrator username/password. YOU SHOULD CHANGE THIS.
  */
 
-$loc_db_url = 'mysql://__database___loc:__database___loc@127.0.0.1/__database___loc';
+$loc_db_url = 'mysql://__name___loc:__name___loc@127.0.0.1/__name___loc';
 
-$aliases['__domain__.loc'] = array(
+$aliases['__name__.loc'] = array(
   'uri' => 'loc.__domain__',
   'root' => '__docroot__',
   'db-url' => $loc_db_url,
@@ -30,7 +30,7 @@ $aliases['__domain__.loc'] = array(
   ),
   'command-specific' => array(
     'site-install' => array(
-      'site-name' => ucfirst('__site__'),
+      'site-name' => '__originalname__',
       'site-mail' => 'info@loc.__domain__',
       'db-url'    => $loc_db_url,
       'account-mail' => 'admin@loc.__domain__',
@@ -45,7 +45,7 @@ $aliases['__domain__.loc'] = array(
  *
  * You should at least ensure 'root' path is correct.
  */
-// $aliases['__domain__.dev'] = array(
+// $aliases['__name__.dev'] = array(
 //   'uri' => 'dev.__domain__',
 //   'root' => '/var/www/__domain__/dev',
 //   'remote-host' => 'dev.__domain__',
@@ -62,7 +62,7 @@ $aliases['__domain__.loc'] = array(
  *
  * You should at least ensure 'root' path is correct.
  */
-// $aliases['__domain__.stage'] = array(
+// $aliases['__name__.stage'] = array(
 //   'uri' => 'stage.__domain__',
 //   'root' => '/var/www/__domain__/stage',
 //   'remote-host' => 'stage.__domain__',
