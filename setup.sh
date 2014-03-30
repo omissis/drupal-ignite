@@ -138,7 +138,7 @@ else
         exit 1
     else
         if [ -e $DOCUMENT_ROOT ]; then
-            rm -rf $DOCUMENT_ROOT/*
+            rm -rf $DOCUMENT_ROOT
         fi
     fi
 fi
@@ -154,10 +154,11 @@ SAFE_NAME=`slugify $NAME`
 TPL_DIR="./template"
 
 # Create temporary directory
-TMP_DIR=`mktemp -d ./drupal-ignite-core-XXXXXX`
+RAND=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
+TMP_DIR="./drupal-ignite-core-$RAND"
 
 # Copy template to temporary directory for processing
-cp -R $TPL_DIR/* $TMP_DIR/
+cp -r $TPL_DIR $TMP_DIR
 
 # Replace strings inside files
 # Using "|" instead of "/" to avoid issues with slashes in docroot path
@@ -198,7 +199,7 @@ while [[ -n $FILES ]]; do
 done
 
 # Copy processed files and directories to destination folder
-cp -R $TMP_DIR/* $DOCUMENT_ROOT/
+cp -r $TMP_DIR $DOCUMENT_ROOT
 
 # Clean up temporary directory
 if [ -e $TMP_DIR ]; then
