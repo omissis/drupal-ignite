@@ -109,14 +109,11 @@
             <format property="build.time" pattern="%Y%m%d%H%M"/>
         </tstamp>
         <drush command="sql-sync" assume="yes">
-            <option name="source-db-url">${source.db.url}</option>
             <option name="source-dump">${source.sys.dump_dir}/${phing.project.name}-${build.time}.sql</option>
-            <option name="target-remote-host">${destination.sys.user}@${domain}</option>
-            <option name="target-db-url">${destination.db.url}</option>
             <option name="target-dump">${destination.sys.dump_dir}/${phing.project.name}-${build.time}.sql</option>
             <param>--no-cache</param>
             <param>default</param>
-            <param>${env}</param>
+            <param>${drush.alias}</param>
         </drush>
     </target>
 
