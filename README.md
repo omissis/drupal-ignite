@@ -18,19 +18,35 @@ Installation
 Contents
 --------
 
-* a simple bash provisioning script
-* a drush alias file
-* a simple apache vhost conf file
-* a tailored .gitignore file
-* a drush make file containing some basic modules and libraries
-* a behat.yml.dist file, containing the template for the behat configuration
-* a phing build.xml file, containing some targets to build the site in the local, dev and stage environments
-* some phing.properties files, containing the variables belonging to each environment
-* a composer.json file, containing all the dependencies needed by behat and phing
-* a phpunit.xml, containing the config for running phpunit tests
-* a _features_ directory, containing some behat files and a sample feature file with two scenarios
-* a _sites_ directory, containing some basic directories laid out
-* a _test_ directory, containing the phpunit's bootstrap file and some utility classes for testing
+* root folder
+** a tailored .gitignore file;
+** a simple apache vhost conf file;
+** a drush make file containing some basic modules and libraries;
+** a behat.yml.dist file, containing a Drupal-optimized set of Behat configuration;
+** some phing.properties files, containing the variables belonging to each environment;
+** a phing build.xml file, containing some targets to build the site in the local, dev and stage environments;
+** a composer.json file, containing all the dependencies needed by behat and phing;
+** a phpunit.xml.dist, containing the default config for running phpunit tests.
+* bin/ folder
+** a small bash build file that downloads composer and phings and runs the build.
+* dumps/ folder
+** placeholder to make sure the directories is here. it will hold drush backups.
+* features/ folder
+** a bootstrap/Drupal/Ignite/ folder containing two Behat Contexts carrying some goodies;
+** a files/ folder containing two images to use as fixtures.
+** an example scenario.
+* profiles/ folder
+** it contains a very basic Drupal install profile.
+* reports/ folder
+** placeholder to make sure the directories is here. it will hold test results and code analysis reports.
+* a _sites_ folder
+** a drush folder containing alias configuration;
+** a modules folder containing basic subfolders layout for future modules and features;
+** an empty themes folder.
+* a _test_ folder
+** a phpunit bootstrap file;
+** a csv file iterator;
+** a migrate helper to load csv data sources.
 
 
 Requirements
@@ -51,3 +67,8 @@ Roadmap
 * add support for javascript testing frameworks
 * add support for copying vhost file into apache config directory
 * add platform/configuration detection to better target copies
+* updating hosts file automatically
+* improve input handling in setup.sh
+* setting up mysql database
+* add apache vhost templates for all environments
+* add nginx vhost templates
