@@ -17,6 +17,8 @@ sites/all/modules/contrib
 sites/all/modules/devel/*
 !sites/all/modules/devel/fixtures
 sites/all/themes/omega
+sites/all/themes/rubik
+sites/all/themes/tao
 sites/all/*.txt
 sites/all/*/*.txt
 sites/example.sites.php
@@ -33,6 +35,7 @@ sites/*/files
 
 # Third party libraries and tools #
 /bin/*
+!/bin/build.sh
 /reports/*
 /vendor
 composer.lock
