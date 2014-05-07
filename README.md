@@ -59,10 +59,11 @@ Requirements
 Roadmap
 -------
 
+* make the script able to handle site names containing any character
 * improve the setup provisioning script to handle a full installation
 * add ansible provisioning as a main option instead of the shell script
 * update and add more dependencies, both on composer and drush make
-* remove italian as default language
+* remove italian as default language for the install profile
 * add debug and prod environment
 * add support for javascript testing frameworks
 * add support for copying vhost file into apache config directory
