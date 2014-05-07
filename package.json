@@ -28,6 +28,7 @@
     "grunt-contrib-cssmin": "0.7.*",
     "grunt-contrib-clean": "0.5.*",
     "grunt-contrib-watch": "0.5.*",
+    "grunt-css-url-rewrite": "0.3.3",
     "grunt-shell": "0.6.*"
   },
   "analyze": false,

@@ -16,6 +16,29 @@ module.exports = function (grunt) {
             }
         },
 
+        cssUrlRewrite: {
+            build: {
+                src: "assets/output.min.css",
+                dest: "assets/styles.min.css",
+                options: {
+                    skipExternal: true,
+                    rewriteUrl: function (url, options, dataURI) {
+                        var imagesPathIndex = url.indexOf("/css/images");
+                        if (imagesPathIndex != -1) {
+                            return url.slice(imagesPathIndex);
+                        }
+
+                        var fontPathIndex = url.indexOf("/css/font");
+                        if (fontPathIndex != -1) {
+                            return url.slice(fontPathIndex);
+                        }
+
+                        return url;
+                    }
+                }
+            }
+        },
+
         cssmin: {
             options: {
                 report: 'min',
@@ -25,7 +48,7 @@ module.exports = function (grunt) {
             },
             build: {
                 files: {
-                    'assets/styles.min.css' : ["css/skel-noscript.css", "css/style.css", "css/style-desktop.css", "css/drupal-ignite.css"]
+                    'assets/output.min.css' : ["css/skel-noscript.css", "css/style.css", "css/style-desktop.css", "css/drupal-ignite.css"]
                 }
             }
         },
@@ -33,7 +56,7 @@ module.exports = function (grunt) {
         watch: {
             less: {
                 files: 'css/*.css',
-                tasks: ['clean:css', 'cssmin']
+                tasks: ['clean:css', 'cssmin', 'cssUrlRewrite']
             },
             js: {
                 files: 'js/*.js',
@@ -44,15 +67,17 @@ module.exports = function (grunt) {
         clean: {
             all: ['assets/*'],
             css: ['assets/*.css'],
-            js: ['assets/*.js']
+            js: ['assets/*.js'],
+            cssUrlRewrite: ['assets/output.min.css']
         }
     });
 
+    grunt.loadNpmTasks('grunt-css-url-rewrite');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-shell');
 
-    grunt.registerTask('default', ['clean', 'uglify', 'cssmin']);
+    grunt.registerTask('default', ['clean', 'uglify', 'cssmin', 'cssUrlRewrite', 'clean:cssUrlRewrite']);
 };
