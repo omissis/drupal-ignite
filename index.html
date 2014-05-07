@@ -1,0 +1,423 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>Drupal Ignite</title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="description" content="Drupal Ignite is a tool that allows you to quickly start a Drupal project optimized for enterprise-class development, continuous integration and testing." />
+        <meta name="keywords" content="Continuous Integration,Drupal,PHP,Phing,Drush,Jenkins,PHPUnit,Behat" />
+
+        <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900,300italic" rel="stylesheet" />
+
+        <script src="vendor/headjs/1.0.3/head.js"></script>
+
+        <script type="text/javascript">
+            var version = 2;
+
+            head.test(
+                head.browser.name === 'ie' && head.browser.version < 9,
+                [
+                    "css/ie8.css",
+                    "vendor/html5shiv/3.7/html5shiv.js",
+                    "vendor/jquery/1.10.2/jquery.js"
+                ],
+                [
+                    "vendor/jquery/2.0.3/jquery.js"
+                ]
+            );
+
+            if (null !== window.location.search.match('mode=dev')) {
+                head.load(
+                    "css/skel-noscript.css", "css/style.css", "css/style-desktop.css", "css/drupal-ignite.css",
+                    "js/jquery.utils.js", "js/jquery.sticky.js", "js/config.js"
+                );
+            } else {
+                head.load("assets/styles.min.css?v=" + version, "assets/app.min.js?v=" + version);
+            }
+        </script>
+    </head>
+    <body class="homepage">
+        <a name=""></a>
+        <div id="header-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="12u">
+                        <section id="header">
+                            <h1>
+                                <a href="#">Drupal Ignite</a>
+                            </h1>
+                            <nav id="nav">
+                                <ul>
+                                    <li class="menu-top current_page_item"><a href="#">&#xf015;</a></li>
+                                    <li><a href="#about">About</a></li>
+                                    <li><a href="#getting-started">Getting started</a></li>
+                                    <li><a href="#documentation">Documentation</a></li>
+                                </ul>
+                            </nav>
+                        </section>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="12u">
+                        <section id="banner">
+                            <span class="image image-full"><img src="images/splash.jpg" alt="Drupal Ignite Background" /></span>
+                            <header>
+                                <h2>Drupal CI. Today.</h2>
+                                <span class="byline">From Zero to Continuous Integration in the blink of an eye.</span>
+                            </header>
+                        </section>
+                    </div>
+                </div>
+                <a name="about"></a>
+                <div class="row">
+                    <div class="12u">
+                        <section class="splash box">
+                            <p>
+                                <em>Drupal Ignite</em> is a tool that helps you setting up a Drupal working environment finely-tuned for Continuous Integration, testing and Code Driven Development. It takes a strongly opinionated view on the toolset and development flow in order to provide an enterprise-class standard for developing with Drupal.
+                            </p>
+                        </section>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="12u">
+                        <section id="intro">
+                            <div>
+                                <div class="row">
+                                    <div class="4u">
+                                        <section class="first">
+                                            <span class="pennant"><span class="fa fa-cog"></span></span>
+                                            <header>
+                                                <h2>Build like a pro.</h2>
+                                            </header>
+                                            <p>Leverage the power of multiple environments, automation and testing to go next level.</p>
+                                        </section>
+                                    </div>
+                                    <div class="4u">
+                                        <section class="middle">
+                                            <span class="pennant pennant-alt"><span class="fa fa-flash"></span></span>
+                                            <header>
+                                                <h2>Be fast. Automate.</h2>
+                                            </header>
+                                            <p>Don't spend time preparing the builds ever again. Let the robots do the repetitive work.</p>
+                                        </section>
+                                    </div>
+                                    <div class="4u">
+                                        <section class="last">
+                                            <span class="pennant pennant-alt2"><span class="fa fa-star"></span></span>
+                                            <header>
+                                                <h2>Quality Rockstar.</h2>
+                                            </header>
+                                            <p>Start writing tests and never let a bug or a forgotten feature ruin your nights and weekends.</p>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <a href="#getting-started" class="button big">Getting Started</a>
+                                <a href="#documentation" class="button alt big">Documentation</a>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="main-wrapper">
+            <div class="container">
+                <div class="row">
+                    <a name="getting-started"></a>
+                    <div class="12u">
+                        <section>
+                            <header class="major">
+                                <h2>Getting started</h2>
+                            </header>
+                            <div>
+                                <div class="row">
+                                    <div class="12u">
+                                        <section class="box">
+                                            <header>
+                                                <h3>1. Installation</h3>
+                                            </header>
+                                            <p>
+                                                You can either download the zip or clone the repository from github and place it in a directory of your choice, eg: <strong>/home/foo/documents/code/drupal/drupal-ignite-core/</strong>
+                                            </p>
+                                        </section>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="12u">
+                                        <section class="box">
+                                            <header>
+                                                <h3>2. Ignition</h3>
+                                            </header>
+                                            <p>
+                                                Once you have drupal ignite directory set on your file system, open a terminal into it and run <strong>./setup.sh --help</strong> to see the available options.
+                                            </p>
+                                            <p>
+                                                When you're ready, you can run <strong>setup.sh</strong> to perform the installation of the drupal ignite template in a directory of your choice (usually the web root, such as <strong>/var/www/yoursite</strong>)
+                                            </p>
+                                        </section>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="12u">
+                                        <section class="box">
+                                            <header>
+                                                <h3>3. Development</h3>
+                                            </header>
+                                            <p>
+                                                After running Drupal Ignite's setup script, you'll have a basic drupal folder where you can start developing your website, so probably you'll only need to run <strong>git add -A</strong> and <strong>git commit -m "Initial commit"</strong> and you'll be good to go!
+                                            </p>
+                                        </section>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="12u">
+                                        <section class="box">
+                                            <header>
+                                                <h3>4. Mastering</h3>
+                                            </header>
+                                            <p>
+                                                You're good to go now, but you might want to look at the <a href="introduction.html">introduction</a> and the other sections to get a better grasp on how to make all the parts working together.
+                                            </p>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="12u">
+                        <a name="documentation"></a>
+
+                        <section>
+                            <header class="major">
+                                <h2>Documentation</h2>
+                            </header>
+                            <div>
+                                <div class="row">
+                                    <div class="4u">
+                                        <section class="box">
+                                            <a href="introduction.html" class="image image-full">
+                                                <img src="images/continuous-integration.jpg" alt="continuous integration" />
+                                            </a>
+                                            <header>
+                                                <h3>Introduction to CI</h3>
+                                            </header>
+                                            <p>Where eveything starts: what's Continuous Integration about, what are the motivations behind it and how does it work with Drupal using the proposed instruments and practices.</p>
+                                            <footer>
+                                                <a href="introduction.html" class="button alt">Find out more</a>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                    <div class="4u">
+                                        <section class="box">
+                                            <a href="#" class="image image-full"><img src="images/composer.jpg" alt="composer" /></a>
+                                            <header>
+                                                <h3>Composer</h3>
+                                            </header>
+                                            <p>The PHP de-facto standard for dependency-management. Drupal Ignite makes use of it for installing some 3rd-party tools that live outside of Drupal's world, such as PHPUnit and Behat.</p>
+                                            <footer>
+                                                <a href="#" class="button alt" onclick="return false;">Coming soon</a>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                    <div class="4u">
+                                        <section class="box">
+                                            <a href="#" class="image image-full"><img src="images/phing.jpg" alt="phing" /></a>
+                                            <header>
+                                                <h3>Phing</h3>
+                                            </header>
+                                            <p>A project build tool modeled after Apache Ant and entirely written in PHP. With Phing, it is possible to automate all the tasks needed for building and deploying a website in a comfortable XML file.</p>
+                                            <footer>
+                                                <a href="#" class="button alt" onclick="return false;">Coming soon</a>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="4u">
+                                        <section class="box">
+                                            <a href="#" class="image image-full"><img src="images/drush.jpg" alt="composer" /></a>
+                                            <header>
+                                                <h3>Drush</h3>
+                                            </header>
+                                            <p>Also called "the Drupal's Swiss knife", Drush(aka DRUpal SHell) is a command-line tool that simplifies a whole range of Drupal-related tasks such as installing a module, backing up a site or installing one.</p>
+                                            <footer>
+                                                <a href="#" class="button alt" onclick="return false;">Coming soon</a>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                    <div class="4u">
+                                        <section class="box">
+                                            <a href="#" class="image image-full"><img src="images/features.jpg" alt="features" /></a>
+                                            <header>
+                                                <h3>Features</h3>
+                                            </header>
+                                            <p>A Drupal module that dumps a site's configuration found in the databse to module files. It enables developers to version most parts of the website and to replicate them easily across environments.</p>
+                                            <footer>
+                                                <a href="#" class="button alt" onclick="return false;">Coming soon</a>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                    <div class="4u">
+                                        <section class="box">
+                                            <a href="#" class="image image-full"><img src="images/migrate.jpg" alt="migrate" /></a>
+                                            <header>
+                                                <h3>Migrate</h3>
+                                            </header>
+                                            <p>A powerful API to import and rollback data to and from Drupal. Extremely helpful in a handful of situations that require to handle data imports, such as website migrations or fixtures setup.</p>
+                                            <footer>
+                                                <a href="#" class="button alt" onclick="return false;">Coming soon</a>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="4u">
+                                        <section class="box">
+                                            <a href="#" class="image image-full"><img src="images/jenkins.jpg" alt="jenkins" /></a>
+                                            <header>
+                                                <h3>Jenkins</h3>
+                                            </header>
+                                            <p>Possibly the most famous and widespread Continuous Integration server, Jenkins is a Java application that orchestrates and controls the execution of the build tasks.</p>
+                                            <footer>
+                                                <a href="#" class="button alt" onclick="return false;">Coming soon</a>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                    <div class="4u">
+                                        <section class="box">
+                                            <a href="#" class="image image-full"><img src="images/phpunit.jpg" alt="phpunit" /></a>
+                                            <header>
+                                                <h3>PHPUnit</h3>
+                                            </header>
+                                            <p>PHP's de-facto standard for Unit Testing, PHPUnit has been chosen by nearly every PHP framework and library in the latest years as the tool for ensuring their code's internal quality.</p>
+                                            <footer>
+                                                <a href="#" class="button alt" onclick="return false;">Coming soon</a>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                    <div class="4u">
+                                        <section class="box">
+                                            <a href="#" class="image image-full"><img src="images/behat.jpg" alt="behat" /></a>
+                                            <header>
+                                                <h3>Behat</h3>
+                                            </header>
+                                            <p>A very powerful yet simple tool for writing Acceptance Tests, Behat helps driving development by behavioral requirements helping to keep the focus on business values.</p>
+                                            <footer>
+                                                <a href="#" class="button alt" onclick="return false;">Coming soon</a>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer-wrapper">
+            <section id="footer" class="container">
+                <div class="row">
+                    <div class="4u">
+                        <div class="row">
+                            <div class="12u">
+                                <header>
+                                    <h2>Useful links</h2>
+                                </header>
+                            </div>
+                            <div class="6u">
+                                <section>
+                                    <ul class="divided">
+                                        <li><a href="http://getcomposer.org/">composer</a></li>
+                                        <li><a href="http://phing.info/">phing</a></li>
+                                        <li><a href="http://phpunit.de/">phpunit</a></li>
+                                        <li><a href="http://behat.org/">behat</a></li>
+                                        <li><a href="http://jenkins-ci.org/">jenkins</a></li>
+                                    </ul>
+                                </section>
+                            </div>
+                            <div class="6u">
+                                <section>
+                                    <ul class="divided">
+                                        <li><a href="https://drupal.org/">drupal</a></li>
+                                        <li><a href="https://drush.ws/">drush</a></li>
+                                        <li><a href="https://drupal.org/project/features">features</a></li>
+                                        <li><a href="https://drupal.org/project/migrate">migrate</a></li>
+                                        <li><a href="https://drupal.org/project/kit">kit</a></li>
+                                    </ul>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="4u">
+                        <section>
+                            <header>
+                                <h2>Contacts</h2>
+                            </header>
+                            <ul class="social">
+                                <li><a class="fa fa-twitter solo" href="http://twitter.com/omissis"><span>Personal Twitter</span></a></li>
+                                <li><a class="fa fa-github solo" href="http://github.com/omissis"><span>Github</span></a></li>
+                                <li><a class="fa fa-linkedin solo" href="http://www.linkedin.com/in/claudiobeatrice"><span>LinkedIn</span></a></li>
+                                <li><a class="fa fa-xing solo" href="https://www.xing.com/profile/Claudio_Beatrice"><span>Xing</span></a></li>
+                                <li><a class="fa fa-google-plus solo" href="https://plus.google.com/+ClaudioBeatrice"><span>Google+</span></a></li>
+                            </ul>
+                            <ul class="contact">
+                                <li>
+                                    <h3>Address</h3>
+                                    <p>
+                                        tenwarp<br />
+                                        Munich, BY<br />
+                                        Germany
+                                    </p>
+                                </li>
+                                <li>
+                                    <h3>Mail</h3>
+                                    <p><a href="mailto:omissis@tenwarp.com">omissis@tenwarp.com</a></p>
+                                </li>
+                                <li>
+                                    <h3>Site</h3>
+                                    <p><a href="http://tenwarp.com">http://tenwarp.com</a></p>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+                    <div class="4u">
+                        <section>
+                            <header>
+                                <h2>What's this all about?</h2>
+                            </header>
+                            <span class="image image-full"><img src="images/about.png" alt="drupal tenwarp about" /></span>
+                            <p>
+                                This is <a href="http://drupalignite.com/">Drupal Ignite</a>, a free Drupal project template and setup script by <a href="http://twitter.com/omissis">omissis</a> and <a href="http://tenwarp.com/">tenwarp</a>. It's released for free under the <a href="LICENSE.txt">MIT</a> license, so feel free to use it for any personal or commercial project. If you have questions or need commercial support, please contact me over at <a href="http://tenwarp.com/">tenwarp.com</a>!
+                            </p>
+                        </section>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="12u">
+                        <div id="copyright">
+                            <ul class="links">
+                                <li>Made by: <a href="http://tenwarp.com/">tenwarp</a></li>
+                                <li>Images: <a href="http://eekxpo.deviantart.com/">Erin King</a>, <a href="http://domin-poznan.pl/">Domin Poznan</a>, <a href="http://rosemermaid10.deviantart.com/">Olivia Zeng</a>
+                                <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                                <li>Content License:
+                                    <a class="site-license-small" rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">
+                                        <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
+                                    </a>
+                                </li>
+                            </ul>
+                            <p>
+                                <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">drupalignite.com</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://tenwarp.com/" property="cc:attributionName" rel="cc:attributionURL">omissis</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

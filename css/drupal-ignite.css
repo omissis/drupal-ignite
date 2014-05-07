@@ -1,0 +1,115 @@
+/** HTML Elements **/
+
+ul {
+    margin: 0.8em 0;
+    padding-left: 1.6em;
+}
+
+ul > li {
+    display: block;
+    list-style-type: disc;
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+header > h1,
+header > h2,
+header > h3,
+header > h4,
+header > h5,
+header > h6 {
+    font-weight: lighter;
+}
+
+section > footer {
+    text-align: right;
+}
+
+sup {
+    font-size: 75%;
+    vertical-align: text-top;
+    display: inline-block;
+    line-height: 100%;
+    margin: 0 1px;
+}
+
+blockquote {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 1.6em 0 1.6em 1.6em;
+    padding: 0 0 0 1.6em;
+    border-left: #edece4 0.4em solid;
+    font-size: 150%;
+    font-style: italic;
+}
+
+strong, b {
+    font-weight: bolder;
+    border-bottom: 1px #ccc dashed;
+}
+
+em, i {
+    font-style: italic;
+    letter-spacing:
+}
+
+/** Text **/
+
+.bold {
+    font-weight: bold;
+}
+
+.mono {
+    font-family: "Andale Mono", AndaleMono, monospace;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+/** Menu **/
+
+.is-sticky > nav {
+    width: 100%;
+    background-color: white;
+    height: 50px;
+    padding-top: 10px;
+    z-index: 999;
+    left: 0;
+
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+}
+
+.menu-top {
+    font-family: FontAwesome;
+    font-style: normal !important;
+}
+
+/** Other **/
+
+.splash.box {
+    font-size: 1.5em;
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+#pager {
+    margin: 80px 0 40px 0;
+    text-align: center
+}
+
+.is-post {
+    padding: 2.75em 3.5em;
+}
+
+.site-license-small {
+    position: relative;
+    top: 3px;
+    left: 2px;
+}

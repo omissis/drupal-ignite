@@ -1,0 +1,381 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>Drupal Ignite - Introduction</title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="description" content="Introduction to Drupal Continuous Integration." />
+        <meta name="keywords" content="Continuous Integration,Drupal,PHP,Phing,Drush,Jenkins,PHPUnit,Behat" />
+
+        <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900,300italic" rel="stylesheet" />
+
+        <script src="vendor/headjs/1.0.3/head.js"></script>
+
+        <script type="text/javascript">
+            var version = 2;
+
+            head.test(
+                head.browser.name === 'ie' && head.browser.version < 9,
+                [
+                    "css/ie8.css",
+                    "vendor/html5shiv/3.7/html5shiv.js",
+                    "vendor/jquery/1.10.2/jquery.js"
+                ],
+                [
+                    "vendor/jquery/2.0.3/jquery.js"
+                ]
+            );
+
+            if (null !== window.location.search.match('mode=dev')) {
+                head.load(
+                    "css/skel-noscript.css", "css/style.css", "css/style-desktop.css", "css/drupal-ignite.css",
+                    "js/jquery.utils.js", "js/jquery.sticky.js", "js/config.js"
+                );
+            } else {
+                head.load("assets/styles.min.css?v=" + version, "assets/app.min.js?v=" + version);
+            }
+        </script>
+    </head>
+    <body class="no-sidebar">
+
+        <!-- Header Wrapper -->
+            <div id="header-wrapper">
+                <div class="container">
+                    <div class="row">
+                        <div class="12u">
+                            <section id="header">
+                                <h1><a href="#">Introduction</a></h1>
+                                <h2>Drupal meets Continuous Integration.</h2>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <div id="main-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="12u">
+                        <section>
+                            <div>
+                                <div class="row">
+                                    <div class="12u skel-cell-important">
+                                        <article class="box is-post">
+                                            <span class="image image-full">
+                                                <img src="images/introduction.jpg" alt="introduction splash" />
+                                            </span>
+
+                                            <div class="row">
+                                                <span class="2u">&nbsp;</span>
+                                                <span class="byline 8u">
+                                                    <header>
+                                                        <p>“Continuous Integration” is a software development practice where members of a team integrate work frequently, usually each person integrates at least daily - leading to multiple integrations per day. Each integration is verified by an automated build (including tests) to detect integration errors as quickly as possible.</p>
+                                                        <p>— Martin Fowler</p>
+                                                    </header>
+                                                </span>
+                                            </div>
+
+                                            <div class="row">
+                                                <span class="2u">&nbsp;</span>
+                                                <span class="8u center">
+                                                    <section>
+                                                        <p><strong>Note for the impatients</strong>: skip the history lesson and go to the <a href="#ignition">practical part</a>.</p>
+                                                    </section>
+                                                </span>
+                                            </div>
+
+                                            <div class="row">
+                                                <span class="2u">&nbsp;</span>
+                                                <span class="8u">
+                                                    <section>
+                                                        <header><h3>Drupal and Continuous Integration never had a healthy relationship</h3></header>
+
+                                                        <p>Since the beginning of times the hard coupling between data and configuration in the database caused developers quite a few headaches when it came time to share or move data around environments. Scenarios like collaborative teamwork, deployments and data pubblication have always been troublesome: how could they integrate their work if almost all of their modifications were deep down their own databases? How could they extract only the relevant slices of information and publish them on another instance of the website?
+                                                        The easiest solution was to work on a common development server, where all developers were making modifications at the same time; another option was to work locally and then replicate everything on the development environment and dumping everything back again regularly.
+                                                        Of course there were other possibilities too, for the strongs of heart.</p>
+
+                                                        <p>
+                                                            To put it as <a href="https://twitter.com/heyrocker">Greg Dunlap</a> did<sup><a href="#note-1">1</a></sup>:
+                                                            <blockquote>
+                                                                We do not have a configuration management problem.<br/>
+                                                                We have an everything management problem.
+                                                            </blockquote>
+                                                        </p>
+
+                                                        <p>At that time, dumping and restoring databases around and going through endless checklists of manual operations was the only viable option to hit production: many found that situation to be so bad and unacceptable that the only option they saw was to leave Drupal behind in a trail of heavy criticism.<br/>
+                                                        That was understandable and for quite many reasons, it was absolutely true: managing and deploying Drupal was a real, hard, unsolved problem.<br/>
+                                                        Not all hope was lost though, as during the years several actors started playing together to try to overcome those limitations and make Drupal a tool easier to work with.</p>
+                                                    </section>
+
+                                                    <section>
+                                                        <header><h3>The birth of the Features module, the incredible configuration exporter</h3></header>
+
+                                                        <p><strong>Features</strong> is module that allows configuration to be exported as a static text file in the form of a Drupal module: as a matter of fact features <em>are</em> Drupal modules, with some special additions. <strong>Features</strong> didn't come alone too, as whole handful of other modules -such as <strong>Feature Override</strong> and <strong>Strongarm</strong>- sprang and started populating its ecosystem, adding up useful functionalities and improving the Drupal ability to export its vast configuration.</p>
+
+                                                        <p>Such module opened up a world of opportunities: by keeping a consistent, conventional and disciplined approach to development, it became possible for multiple developers to cooperate on the same website without the need for tedious point and click sessions for repeating the work over and over again. Database clashes became a remnant of the past(well, ish): configuration could be exported, versioned, compared, reviewed, patched, imported. Pretty much as any other good ol' frameworks! Great!</p>
+
+                                                        <p>Theoretically. In practice, some modules lacked -completely or partially- integration and there was no way to properly import <em>real</em> data, such as nodes, users and taxonomy terms.</p>
+                                                    </section>
+
+                                                    <section>
+                                                        <header><h3>Enter Migrate: massive and flexible data import into the blue</h3></header>
+
+                                                        <p><strong>Migrate</strong> is another very powerful and flexible module that deals with Drupal data imports. Its main goal is to provide an API that allows developers to easily map almost any kind of data source (csv files, databases, other Drupal installations, even Wordpress sites!) to a Drupal destination. In order to ease the development of such data imports (aka migrations), it's possible to leverage a broad set of built-in functions and classes that help during the whole process: for instance it's possible to leverage the MigrateDestinationEntity class (and its children) to easily model a target entity to export data to.</p>
+
+                                                        <p>As all of the API goodness wasn't enough, a powerful set of commands was also made available: thanks to the Drush integration, it's possible to list, run and even rollback migrations, not to mention the many other utility commands that ship with the module.</p>
+                                                    </section>
+
+                                                    <section>
+                                                        <header><h3>People of the World: Drush up your life!</h3></header>
+
+                                                        <p>Automation ain't no automation without a proper dose of Command Line. Drush possibly needs no introduction: the powerful DRUpal SHell is a godsent tool for effectively dealing with repetitive tasks and it's a crucial component when it comes to achieving a fully-working Continuous Integration flow. Commands like site-install, rsync and sql-sync are an irreplaceable help at deploy time.</p>
+                                                    </section>
+
+                                                    <section>
+                                                        <header><h3>PHP strikes back: the invasion of the tools from Planet 13</h3></header>
+
+                                                        <p>It's no 2005 anymore and even Drupal started to acknowledge that: lots of tools, libraries and standards(with the unfortunate exception of Github and PSR-1 and PSR-2) made their way into the upcoming "8" Release, radically challenging the status quo and revolutionizing many aspect of this beloved CMS. We're going to see some of them, such as <strong>Composer</strong> and <strong>PHPUnit</strong> and we'll also introduce some other ones that are also quite common, such as <strong>Phing</strong>, <strong>Jenkins</strong> and <strong>Behat</strong>.</p>
+                                                    </section>
+
+                                                    <section>
+                                                        <header><h3>Putting it all together</h3></header>
+
+                                                        <p>Drupal Ignite aims to be the missing piece of the puzzle, or the-glue-that-ties-all-the–pieces-together if you will.
+                                                        Put simply:<blockquote>it's not much more than a template and a bash script</blockquote>
+                                                        The former contains a set of files and folders with an opinionated view on how the project should be structured, while the latter it's just a utility that does the work of copying the template to a destination folder of your choice while replacing some variables for you.</p>
+                                                    </section>
+
+                                                    <section>
+                                                        <p><a name="ignition"></a></p>
+
+                                                        <header><h3 class="bold">Ladies and Gentlemen: it's Ignition Time!</h3></header>
+
+                                                        <p>
+                                                            In order to start using <strong>Drupal Ignite</strong> you need <em>surprise!</em> to download it in a directory of your choice, say <span class="mono">~/bin/drupal-ignite</span>. Once you have the directory in place, make sure the <em>setup.sh</em> script is executable by running <span class="mono">chmod a+x ~/bin/drupal-ignite</span>.
+                                                        </p>
+
+                                                        <p>
+                                                            Now you're almost good to go, as the only thing missing before starting the actual work on the website is to run the script itself, which accepts the following parameters:
+                                                            <ul>
+                                                                <li><strong>docroot</strong>, to specify the folder that is going to host your website's files, such as <em>/var/www/my_drupal_website</em>;</li>
+                                                                <li><strong>domain</strong>, to specify the (real) for site's domain, such as <em>www.my-drupal-website.com</em>;</li>
+                                                                <li><strong>name</strong>, to specify the name for the website, such as <em>MyDrupalWebsite</em>.</li>
+                                                            </ul>
+                                                        </p>
+
+                                                        <p>
+                                                            So the complete setup.sh invocation could look like this:<br/>
+                                                            <span class="mono">./setup.sh --docroot=/var/www/my_drupal_website --domain=www.my-drupal-website.com --name="MyDrupalWebsite"</span>
+                                                        </p>
+
+                                                        <p><strong>PRO TIP:</strong> if you don't specify any of the parameters above on the command line, the script will ask you to enter them interactively.</p>
+
+                                                        <p>Et voilà: if no errors occurred, your website is ready to receive its first commit! :)</p>
+                                                    </section>
+
+                                                    <section>
+                                                        <header><h3>Development</h3></header>
+
+                                                        <p>
+                                                            Ok now that you got your new Drupal website ignited, how does the development flow look like for, say, creating a simple multi-user blog?<br/><br/>
+                                                            Well, you'll probably start to create some <strong>Content Types</strong>, such as a <strong>Blog</strong> and a <strong>Post</strong>, each one featuring some custom <strong>Fields</strong>.<br/>
+                                                            You'll also need a <strong>Taxonomy</strong> or two for categorization purposes and a couple <strong>Views</strong> to show the list of <strong>Posts</strong> for a given <strong>Blog</strong> and another list of <strong>Posts</strong> for each <strong>Category</strong>.<br/>
+                                                            Also, users will need to have different roles for writers and reviewers, so you need to create those permissions too.<br/>
+                                                            Maybe you'll also add a <strong>Rule</strong> to send an email to subscribed readers to inform them whenever a new <strong>Post</strong> gets published.<br/>
+                                                            Then you'll probably need to integrate some styling, so you create a <strong>Theme</strong> featuring some css and javascript files and some php to do some hook magic.<br/>
+                                                            It could also happen that you will need to lay out a little <strong>Custom Module</strong> for showing a block containing some ads from an exoteric advertisment company you have to integrate.<br/>
+                                                            Oh, and how about the initial data? You'll probably need to create:<br/>
+                                                            <ul>
+                                                                <li>some users with their blogs and some that just review the posts before publishing them;</li>
+                                                                <li>a set of basic categories;</li>
+                                                                <li>some initial blog posts with images.</li>
+                                                            </ul><br/>
+                                                            Finally, having some acceptance tests to verify you implemented the business logic as agreed with the will both serve as an progress meter and as an insurance against future disasters.
+                                                        </p>
+
+                                                        <p>
+                                                            How do we handle all of things above? Let's break them one by one to get an "bird's eye" overview:
+                                                            <ul>
+                                                                <li>anything that defines the structure of your blog, such as <strong>Content Types</strong>, <strong>Fields</strong>, <strong>Taxonomies</strong>, <strong>Views</strong>, <strong>Rules</strong> and some <strong>Variables</strong> will be exported in a <strong>Feature</strong> called <strong>SitenameBlog</strong> and it will reside in <span class="mono">/sites/all/modules/features/sitename_blog</span>;</li>
+                                                                <li>the custom theme you developed will reside in <span class="mono">/sites/all/themes/sitename</span>;</li>
+                                                                <li>the custom module you developed will reside in <span class="mono">/sites/all/modules/custom/exoteric_ad</span>;</li>
+                                                                <li>the initial data(users, categories, blogs, posts, etc) will be implemented in a migration module that will reside in <span class="mono">/sites/all/modules/migrations/fixtures</span>;</li>
+                                                                <li>the (Behat) acceptance tests will reside in <span class="mono">/features</span>.</li>
+                                                            </ul>
+                                                        </p>
+
+                                                        <p>How all the single parts work will be subject of dedicated sections, so don't worry if it seems too much for now: there's even more to this than what we mentioned until now :)</p>
+
+                                                        <p>We're getting closer to our first deploy now: after a (hopefully) good load of commits, all the pieces will start to fall into place so that at some point you'll feel you'll be ready to push your modifications to the central repository and start your first build.</p>
+
+                                                        <p>After you push, here's what's going to happen<sup><a href="#note-2">2</a></sup>:</p>
+
+                                                        <p class="image">
+                                                            <img src="contents/assets/drupal_ci_flow_medium.jpg" alt="drupal continuous integration diagram" />
+                                                        </p>
+
+                                                        <p>Wow! Let's break that again, too:</p>
+
+                                                        <p>Whenever you push, your Source Control Management system(let's assume it's <strong>git</strong> from now on) will store your commits on the filesystem.</p>
+
+                                                        <p>Leveraging its <strong>post_receive</strong> hook, you'll be able to execute a script that triggers a URL exposed by <strong>Jenkins</strong> that will start the build.</p>
+
+                                                        <p><strong>Jenkins</strong> will clone the website repository and run the <span class="mono">bin/build.sh</span> file you can find in your website folder.</p>
+
+                                                        <p>The <span class="mono">bin/build.sh</span> script will do three crucial things: it downloads <strong>Composer</strong>, it runs it to download the needed dependencies -<strong>Phing</strong> being the most important one- and then it will run <strong>Phing</strong>, which in turn will install the website, run the tests, run the code analysis tools and deploy the website to the destination.</p>
+
+                                                        <p>If all of the above succeeds, the website gets deployed in a few minutes. If not, you'll get a report of failure and some nice logs to inspect to find what happened.</p>
+
+                                                        <p>Now, this is how the whole process works. Of course there's A LOT of possible tweaks to optimize and adapt the process to a specific process needs: we're going to dive deeper in each topic in the next articles.</p>
+
+                                                        <p>Almost forgot! I also prepared some slides on this topic to aid you in learing these topics. You can download them in <a href="contents/assets/00_intro_eng.pdf">English</a> or <a href="contents/assets/00_intro_ita.pdf">Italian</a></p>
+                                                    </section>
+
+                                                    <section>
+                                                        <p>That's all for now, I realy hope you'll find Drupal Ignite useful! Feel free to shoot questions and feedback at me via twitter or email.</p>
+                                                        <p>
+                                                            <a href="http://twitter.com/omissis">@omissis</a>
+                                                            <br/>
+                                                            <a href="http://tenwarp.com">tenwarp.com</a>
+                                                        </p>
+                                                    </section>
+
+                                                    <section>
+                                                        <header><h3>Notes</h3></header>
+
+                                                        <p>
+                                                            <a name="note-1">1</a> - Greg's <a href="http://www.slideshare.net/heyrocker/deployment-in-drupal-8">slides on future of Drupal deployment</a> at Brussels Dev Days 2011
+                                                        </p>
+                                                        <p>
+                                                            <a name="note-2">2</a> - Drupal Continuous Integration flow diagram <a href="contents/assets/drupal_ci_flow.png">full-size image</a>.
+
+                                                        </p>
+                                                    </section>
+                                                </span>
+                                            </div>
+
+                                            <nav id="pager">
+                                                <ul>
+                                                    <li>
+                                                        <a href="index.html">&lt;&nbsp;home</a>
+                                                    </li>
+                                                    <li class="menu-top current_page_item">
+                                                        <a href="#">introduction</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="composer.html" onclick="alert('not available yet!'); return false;">composer&nbsp;&gt;</a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </article>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer-wrapper">
+            <section id="footer" class="container">
+                <div class="row">
+                    <div class="4u">
+                        <div class="row">
+                            <div class="12u">
+                                <header>
+                                    <h2>Useful links</h2>
+                                </header>
+                            </div>
+                            <div class="6u">
+                                <section>
+                                    <ul class="divided">
+                                        <li><a href="http://getcomposer.org/">composer</a></li>
+                                        <li><a href="http://phing.info/">phing</a></li>
+                                        <li><a href="http://phpunit.de/">phpunit</a></li>
+                                        <li><a href="http://behat.org/">behat</a></li>
+                                        <li><a href="http://jenkins-ci.org/">jenkins</a></li>
+                                    </ul>
+                                </section>
+                            </div>
+                            <div class="6u">
+                                <section>
+                                    <ul class="divided">
+                                        <li><a href="https://drupal.org/">drupal</a></li>
+                                        <li><a href="https://drush.ws/">drush</a></li>
+                                        <li><a href="https://drupal.org/project/features">features</a></li>
+                                        <li><a href="https://drupal.org/project/migrate">migrate</a></li>
+                                        <li><a href="https://drupal.org/project/kit">kit</a></li>
+                                    </ul>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="4u">
+                        <section>
+                            <header>
+                                <h2>Contacts</h2>
+                            </header>
+                            <ul class="social">
+                                <li><a class="fa fa-twitter solo" href="http://twitter.com/omissis"><span>Personal Twitter</span></a></li>
+                                <li><a class="fa fa-github solo" href="http://github.com/omissis"><span>Github</span></a></li>
+                                <li><a class="fa fa-linkedin solo" href="http://www.linkedin.com/in/claudiobeatrice"><span>LinkedIn</span></a></li>
+                                <li><a class="fa fa-xing solo" href="https://www.xing.com/profile/Claudio_Beatrice"><span>Xing</span></a></li>
+                                <li><a class="fa fa-google-plus solo" href="https://plus.google.com/+ClaudioBeatrice"><span>Google+</span></a></li>
+                            </ul>
+                            <ul class="contact">
+                                <li>
+                                    <h3>Address</h3>
+                                    <p>
+                                        tenwarp<br />
+                                        Munich, BY<br />
+                                        Germany
+                                    </p>
+                                </li>
+                                <li>
+                                    <h3>Mail</h3>
+                                    <p><a href="mailto:omissis@tenwarp.com">omissis@tenwarp.com</a></p>
+                                </li>
+                                <li>
+                                    <h3>Site</h3>
+                                    <p><a href="http://tenwarp.com">http://tenwarp.com</a></p>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+                    <div class="4u">
+                        <section>
+                            <header>
+                                <h2>What's this all about?</h2>
+                            </header>
+                            <span class="image image-full"><img src="images/about.png" alt="drupal tenwarp about" /></span>
+                            <p>
+                                This is <a href="http://drupalignite.com/">Drupal Ignite</a>, a free Drupal project template and setup script by <a href="http://twitter.com/omissis">omissis</a> and <a href="http://tenwarp.com/">tenwarp</a>. It's released for free under the <a href="LICENSE.txt">MIT</a> license, so feel free to use it for any personal or commercial project. If you have questions or need commercial support, please contact me over at <a href="http://tenwarp.com/">tenwarp.com</a>!
+                            </p>
+                        </section>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="12u">
+                        <div id="copyright">
+                            <ul class="links">
+                                <li>Made by: <a href="http://tenwarp.com/">tenwarp</a></li>
+                                <li>Images: <a href="http://eekxpo.deviantart.com/">Erin King</a>, <a href="http://domin-poznan.pl/">Domin Poznan</a>, <a href="http://rosemermaid10.deviantart.com/">Olivia Zeng</a>
+                                <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                                <li>Content License:
+                                    <a class="site-license-small" rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">
+                                        <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
+                                    </a>
+                                </li>
+                            </ul>
+                            <p>
+                                <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">drupalignite.com</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://tenwarp.com/" property="cc:attributionName" rel="cc:attributionURL">omissis</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>
