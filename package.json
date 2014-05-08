@@ -29,7 +29,8 @@
     "grunt-contrib-clean": "0.5.*",
     "grunt-contrib-watch": "0.5.*",
     "grunt-css-url-rewrite": "0.3.3",
-    "grunt-shell": "0.6.*"
+    "grunt-shell": "0.6.*",
+    "grunt-string-replace": "~0.2.7"
   },
   "analyze": false,
   "license": "Proprietary",

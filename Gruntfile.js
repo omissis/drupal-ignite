@@ -4,6 +4,20 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
+        'string-replace': {
+          dist: {
+            files: {
+              './': ['index.html', 'introduction.html'], // includes files in dir
+            },
+            options: {
+              replacements: [{
+                pattern: /var\ version\ \=\ \d+\;/i,
+                replacement: "var version = " + Math.random().toString().slice(2) + ";"
+              }]
+            }
+          }
+        },
+
         uglify: {
             options: {
                 report: 'min',
@@ -68,7 +82,8 @@ module.exports = function (grunt) {
             all: ['assets/*'],
             css: ['assets/*.css'],
             js: ['assets/*.js'],
-            cssUrlRewrite: ['assets/output.min.css']
+            cssUrlRewrite: ['assets/output.min.css'],
+            minification: ['assets/styles.min.css', 'assets/app.min.js']
         }
     });
 
@@ -77,7 +92,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
+
+    grunt.loadNpmTasks('grunt-string-replace');
+
     grunt.loadNpmTasks('grunt-shell');
 
-    grunt.registerTask('default', ['clean', 'uglify', 'cssmin', 'cssUrlRewrite', 'clean:cssUrlRewrite']);
+    grunt.registerTask('default', ['clean', 'uglify', 'cssmin', 'cssUrlRewrite', 'clean:cssUrlRewrite', 'string-replace']);
 };
