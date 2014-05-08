@@ -7,7 +7,7 @@ module.exports = function (grunt) {
         'string-replace': {
           dist: {
             files: {
-              './': ['index.html', 'introduction.html'], // includes files in dir
+              './': ['index.html', 'introduction.html'],
             },
             options: {
               replacements: [{
@@ -92,9 +92,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
-
     grunt.loadNpmTasks('grunt-string-replace');
-
     grunt.loadNpmTasks('grunt-shell');
 
     grunt.registerTask('default', ['clean', 'uglify', 'cssmin', 'cssUrlRewrite', 'clean:cssUrlRewrite', 'string-replace']);
