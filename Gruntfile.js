@@ -11,7 +11,7 @@ module.exports = function (grunt) {
             },
             build: {
                 files: {
-                    'assets/app.min.js' : ["js/jquery.utils.js", "js/jquery.sticky.js", "js/config.js"]
+                    'assets/app.min.js' : ["js/ga.js", "js/jquery.utils.js", "js/jquery.sticky.js", "js/config.js"]
                 }
             }
         },
