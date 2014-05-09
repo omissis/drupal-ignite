@@ -1,18 +1,23 @@
 Drupal Ignite
 =============
 
-This project contains a drupal 7 template project that can be used to quickly set up a new environment.
+This project contains a Drupal 7 template project that can be used to quickly set up a new environment.
+
+NOTICE
+------
+
+This software is in early development stage and could still change a lot, so don't get mad if it still has a few raw edges :)
+
 
 
 Installation
 ------------
 
-* install composer (http://getcomposer.org/)
-* run the setup.sh script and provide a vendor name (eg: acme), a site name (eg: www) and an installation folder (eg: /var/www/com.acme.www)
-* configure the right parameters in the build.loc.properties, build.dev.properties and build.stage.properties files.
-* start a sql database (MySQL, for instance)
-* initialize dependencies using ```composer install```
-* let phing build the local environment by typing ```bin/phing loc-app -verbose```
+* run the setup.sh script and provide an installation folder (eg: **/var/www/com.acme.www**), a domain(eg: **www.acme.com**) and a site name (eg: **AcmeSite**);
+* go to the installation folder (eg: ```cd /var/www/com.acme.www```)
+* review and fix the parameters in the build.loc.properties, build.dev.properties and build.stage.properties files;
+* start your database (MySQL, for instance);
+* let phing build the local environment by typing ```bin/phing loc-app -verbose```.
 
 
 Contents
