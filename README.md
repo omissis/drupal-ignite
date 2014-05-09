@@ -13,9 +13,9 @@ This software is in early development stage and could still change a lot, so don
 Installation
 ------------
 
-* run the setup.sh script and provide an installation folder (eg: **/var/www/com.acme.www**), a domain(eg: **www.acme.com**) and a site name (eg: **AcmeSite**);
-* go to the installation folder (eg: ```cd /var/www/com.acme.www```)
-* review and fix the parameters in the build.loc.properties, build.dev.properties and build.stage.properties files;
+* run the setup.sh script and provide an installation folder (eg: **/var/www/acme/website**), a domain and a site name (eg: **AcmeSite**);
+* go to the installation folder (eg: ```cd /var/www/acme/website```)
+* review and fix the parameters in the **build.loc.properties**, **build.dev.properties** and **build.stage.properties** files;
 * start your database (MySQL, for instance);
 * let phing build the local environment by typing ```bin/phing loc-app -verbose```.
 
