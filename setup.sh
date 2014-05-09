@@ -154,7 +154,7 @@ SAFE_NAME=`slugify $NAME`
 TPL_DIR="./template"
 
 # Create temporary directory
-TMP_DIR==`mktemp -d`
+TMP_DIR=`mktemp -d`
 
 # Copy template to temporary directory for processing
 cp -r $TPL_DIR $TMP_DIR
