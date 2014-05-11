@@ -1,17 +1,5 @@
 /** HTML Elements **/
 
-ul {
-    margin: 0.8em 0;
-    padding-left: 1.6em;
-}
-
-ul > li {
-    display: block;
-    list-style-type: disc;
-    display: list-item;
-    text-align: -webkit-match-parent;
-}
-
 header > h1,
 header > h2,
 header > h3,
@@ -112,4 +100,16 @@ em, i {
     position: relative;
     top: 3px;
     left: 2px;
+}
+
+article.is-post > .row ul {
+    margin: 0.8em 0;
+    padding-left: 1.6em;
+}
+
+article.is-post > .row ul li {
+    display: block;
+    list-style-type: disc;
+    display: list-item;
+    text-align: -webkit-match-parent;
 }
