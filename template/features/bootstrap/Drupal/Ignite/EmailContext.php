@@ -4,12 +4,15 @@ namespace Drupal\Ignite;
 
 use Behat\MinkExtension\Context\RawMinkContext;
 
-class EmailContext extends RawMinkContext
+class EmailContext 
+                    extends RawMinkContext
 {
     /**
      * @BeforeScenario @mail
      */
-    public function setUpMailScenario()
+    public 
+            function setUpMailScenario
+                                        ()
     {
         // save the default mailing system
         $this->defaultMailSystem = variable_get('mail_system');
@@ -24,7 +27,10 @@ class EmailContext extends RawMinkContext
     /**
      * @AfterScenario @mail
      */
-    public function tearDownMailScenario()
+    public 
+            function 
+                    tearDownMailScenario
+                                        ()
     {
         // reset the default mailing system
         variable_set('mail_system', $this->defaultMailSystem);
@@ -33,7 +39,10 @@ class EmailContext extends RawMinkContext
     /**
      * @Given /^the email message with subject "([^"]*)" was sent to the following email addresses:$/
      */
-    public function wasMessageSentToEmails($subject, array $emails)
+    public 
+            function 
+                    wasMessageSentToEmails
+                                            ($subject, array $emails)
     {
         $sentEmails = $this->getSentEmails();
         $subject = sprintf($subject, $this->getIdOfTheLatestNode());
@@ -60,7 +69,10 @@ class EmailContext extends RawMinkContext
     /**
      * @Given /^a total of (\d+) emails have been sent$/
      */
-    public function countSentEmails($emailCount)
+    public 
+            function 
+                    countSentEmails
+                                    ($emailCount)
     {
         $sentEmails = $this->getSentEmails();
 
@@ -85,7 +97,10 @@ class EmailContext extends RawMinkContext
     /**
      * @Transform /^table:email$/
      */
-    public function castEmailsTable(TableNode $emailsTable)
+    public 
+            function 
+                    castEmailsTable
+                                    (TableNode $emailsTable)
     {
         $emails = array();
         foreach ($emailsTable->getHash() as $emailHash) {
@@ -95,7 +110,9 @@ class EmailContext extends RawMinkContext
         return $emails;
     }
 
-    protected function getSentEmails()
+    protected 
+            function 
+                    getSentEmails()
     {
         $query = '"SELECT * FROM watchdog WHERE type = \'%s\' AND severity = %d"';
         $type = 'email_testing';
@@ -116,7 +133,9 @@ class EmailContext extends RawMinkContext
         return $rows;
     }
 
-    protected function clearWatchdog()
+    protected 
+            function 
+                    clearWatchdog()
     {
         return $this->getDriver()->drush('sql-query', array('"TRUNCATE TABLE watchdog"'));
     }
