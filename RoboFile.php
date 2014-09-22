@@ -1,20 +1,20 @@
 <?php
 
 use Symfony\Component\Finder\Finder as Finder;
-use Symfony\Component\Filesystem\Filesystem as Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class RoboFile extends \Robo\Tasks
 {
-  const VERSION = '0.1';
+
+  // Standard template url.
+  private $standardUrlTemplate = 'git@github.com:paolomainardi/drupal-ignite-standard-template.git';
 
   /**
    * Setup drupal-ignite.
    */
-  public function setup($name = false, $domain = false, $docroot = false) {
+  public function setup($name = false, $domain = false, $docroot = false, $opts = ['template' => 'false'])
+  {
+    $this->stopOnFail(true);
     $this->yell("Drupal-ignite setup");
-    $this->say("DrupalIgnite RELEASE: " . self::VERSION);
-
     if (!$name) {
        $name = $this->ask("Please enter Site's Name:");
     }
@@ -24,21 +24,17 @@ class RoboFile extends \Robo\Tasks
     if (!$docroot) {
       $docroot = $this->ask("Please enter Site's Root Folder:");
     }
+    if ($opts['template'] !== 'false') {
+      $this->standardUrlTemplate = $opts['template'];
+    }
     $temp_dir = sys_get_temp_dir() . "/" . uniqid('drupal-ignite');
     $this->createDocroot($docroot);
     $this->buildTemplate($name, $domain, $docroot, $temp_dir);
     $this->finalize($docroot, $temp_dir);
   }
 
-  public function finalize($docroot, $temp_dir) {
-    $this->printTaskInfo('Building project from template...');
-    $this->taskMirrorDir([$temp_dir => $docroot])->run();
-    $this->taskDeleteDir($temp_dir)->run();
-    $this->say('Congratulations, all done');
-    $this->yell('You can access your project by here: ' . $docroot);
-  }
-
-  public function buildTemplate($name, $domain, $docroot, $temp_dir) {
+  public function buildTemplate($name, $domain, $docroot, $temp_dir)
+  {
     $this->printTaskInfo('Building project from template...');
     $finder = new Finder();
 
@@ -58,19 +54,24 @@ class RoboFile extends \Robo\Tasks
          ->mkdir($temp_dir)
          ->run();
 
-    // Mirror template.
-    $this->taskMirrorDir(['template' => $temp_dir])->run();
+    // Clone template.
+    $this->taskGitStack()
+        ->cloneRepo($this->standardUrlTemplate, $temp_dir)
+        ->run();
+    $this->say('Removing git stuff...');
+    $res = $this->taskDeleteDir($temp_dir . '/.git')->run();
 
     // Replace strings in file.
-    $files = Finder::create()->ignoreVCS(true)
+    $files = Finder::create()
+        ->ignoreVCS(true)
         ->files()
         ->in($temp_dir);
     foreach ($files as $file) {
       foreach ($tokens as $token => $replace) {
         $this->taskReplaceInFile($file->getRealpath())
-         ->from($token)
-         ->to($replace)
-         ->run();
+             ->from($token)
+             ->to($replace)
+             ->run();
       }
     }
 
@@ -90,21 +91,21 @@ class RoboFile extends \Robo\Tasks
     }
   }
 
-  public function createDocroot($docroot) {
+  public function createDocroot($docroot)
+  {
     $this->printTaskInfo('Creating document root...');
-    $fs = new Filesystem();
     $fs_stack = $this->taskFileSystemStack();
     $finder = new Finder();
-    if (!$fs->exists($docroot)) {
+    if (!is_dir($docroot)) {
       $fs_stack->mkdir($docroot)->run();
-    }
-    else {
+    } else {
       if (count($finder->files()->in($docroot))) {
         $empty = false;
         while (!in_array($empty, array('y', 'n'))) {
           $empty = $this->ask("Folder '$docroot' already exists, should I empty it now? [y/n]");
           if ($empty == 'n') {
             $this->say('<error>Folder needs to be empty in order to continue.</error>');
+
             return FALSE;
           }
           $this->taskCleanDir($docroot)->run();
@@ -113,12 +114,22 @@ class RoboFile extends \Robo\Tasks
     }
   }
 
-  private function slugify($text) {
+  public function finalize($docroot, $temp_dir)
+  {
+    $this->printTaskInfo('Building project from template...');
+    $this->taskMirrorDir([$temp_dir => $docroot])->run();
+    $this->taskDeleteDir($temp_dir)->run();
+    $this->say('Congratulations, all done');
+    $this->yell('Your drupal ignited project can be found here: ' . $docroot);
+  }
+
+  private function slugify($text)
+  {
     $text = preg_replace('~[^\\pL\d]+~u', '_', $text);
     $text = trim($text, '_');
     $text = strtolower($text);
     $text = preg_replace('~[^-\w]+~', '', $text);
+
     return $text;
   }
-
 }

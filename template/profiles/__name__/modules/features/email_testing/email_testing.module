@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the Email testing feature.
- */
-
-include_once 'email_testing.features.inc';
