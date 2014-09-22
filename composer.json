@@ -1,0 +1,9 @@
+{
+    "require": {
+      "codegyre/robo": "*",
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "minimum-stability": "beta"
+}
