@@ -157,8 +157,12 @@ TPL_DIR="./template"
 RAND=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
 TMP_DIR="./drupal-ignite-core-$RAND"
 
+if [ ! -d $TMP_DIR ]; then
+    mkdir -p $TMP_DIR
+fi
+
 # Copy template to temporary directory for processing
-cp -r $TPL_DIR $TMP_DIR
+cp -r $TPL_DIR/* $TMP_DIR
 
 # Replace strings inside files
 # Using "|" instead of "/" to avoid issues with slashes in docroot path
@@ -199,7 +203,7 @@ while [[ -n $FILES ]]; do
 done
 
 # Copy processed files and directories to destination folder
-cp -r $TMP_DIR $DOCUMENT_ROOT
+cp -r $TMP_DIR/* $DOCUMENT_ROOT
 
 # Clean up temporary directory
 if [ -e $TMP_DIR ]; then
