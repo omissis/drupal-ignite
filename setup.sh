@@ -158,7 +158,7 @@ RAND=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
 TMP_DIR="./drupal-ignite-core-$RAND"
 
 # Copy template to temporary directory for processing
-cp -r $TPL_DIR $TMP_DIR
+cp -r $TPL_DIR/* $TMP_DIR
 
 # Replace strings inside files
 # Using "|" instead of "/" to avoid issues with slashes in docroot path
