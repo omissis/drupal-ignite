@@ -13,12 +13,11 @@ Installation
 ------------
 
 * Run ```composer install``` from the root of the project
- and provide an installation folder (eg: **/var/www/acme/website**), a domain and a site name (eg: **AcmeSite**);
+* Run ```bin/robo setup" and provide an installation folder (eg: **/var/www/acme/website**), a domain and a site name (eg: **AcmeSite**), optionally a drupal ignite custom template git url.
 * go to the installation folder (eg: ```cd /var/www/acme/website```)
 * review and fix the parameters in the **build.loc.properties**, **build.dev.properties** and **build.stage.properties** files;
 * start your database (MySQL, for instance);
 * let phing build the local environment by typing ```bin/phing loc-app -verbose```.
-
 
 Requirements
 ------------
