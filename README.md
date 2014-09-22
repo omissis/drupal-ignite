@@ -13,7 +13,7 @@ Installation
 ------------
 
 * Run ```composer install``` from the root of the project
-* Run ```bin/robo setup" and provide an installation folder (eg: **/var/www/acme/website**), a domain and a site name (eg: **AcmeSite**), optionally a drupal ignite custom template git url.
+* Run ```bin/robo setup``` and provide an installation folder (eg: **/var/www/acme/website**), a domain and a site name (eg: **AcmeSite**), optionally a drupal ignite custom template git url.
 * go to the installation folder (eg: ```cd /var/www/acme/website```)
 * review and fix the parameters in the **build.loc.properties**, **build.dev.properties** and **build.stage.properties** files;
 * start your database (MySQL, for instance);
