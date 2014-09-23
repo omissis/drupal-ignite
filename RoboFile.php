@@ -58,8 +58,19 @@ class RoboFile extends \Robo\Tasks
     $this->taskGitStack()
         ->cloneRepo($this->standardUrlTemplate, $temp_dir)
         ->run();
+
+    // Download submodule if exists.
+    if (file_exists("{$temp_dir}/.gitmodules")) {
+      $this->taskExecStack()
+        ->stopOnFail()
+        ->exec("cd {$temp_dir} && git submodule update --init --recursive")
+        ->run();
+      $this->taskFileSystemStack()
+        ->remove("{$temp_dir}/.gitmodules");
+    }
+
     $this->say('Removing git stuff...');
-    $res = $this->taskDeleteDir($temp_dir . '/.git')->run();
+    $this->taskDeleteDir($temp_dir . '/.git')->run();
 
     // Replace strings in file.
     $files = Finder::create()
