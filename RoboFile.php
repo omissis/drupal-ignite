@@ -117,8 +117,18 @@ class RoboFile extends \Robo\Tasks
   public function finalize($docroot, $temp_dir)
   {
     $this->printTaskInfo('Building project from template...');
+
+    // Mirror temporary dir and remove it.
     $this->taskMirrorDir([$temp_dir => $docroot])->run();
     $this->taskDeleteDir($temp_dir)->run();
+
+    // Download and run composer.
+    $this->taskExecStack()
+     ->stopOnFail()
+     ->exec("curl -sS https://getcomposer.org/installer | php -- --install-dir={$docroot}/bin")
+     ->exec("cd {$docroot} && php {$docroot}/bin/composer.phar install --prefer-dist --verbose")
+     ->run();
+
     $this->say('Congratulations, all done');
     $this->yell('Your drupal ignited project can be found here: ' . $docroot);
   }
