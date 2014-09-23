@@ -16,7 +16,7 @@ class RoboFile extends \Robo\Tasks
     $this->stopOnFail(true);
     $this->yell("Drupal-ignite setup");
     if (!$name) {
-       $name = $this->ask("Please enter Site's Name:");
+      $name = $this->ask("Please enter Site's Name:");
     }
     if (!$domain) {
       $domain = $this->ask("Please enter Site's Domain:");
