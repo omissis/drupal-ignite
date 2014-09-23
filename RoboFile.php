@@ -66,7 +66,8 @@ class RoboFile extends \Robo\Tasks
         ->exec("cd {$temp_dir} && git submodule update --init --recursive")
         ->run();
       $this->taskFileSystemStack()
-        ->remove("{$temp_dir}/.gitmodules");
+        ->remove("{$temp_dir}/.gitmodules")
+        ->run();
     }
 
     $this->say('Removing git stuff...');
