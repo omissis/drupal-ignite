@@ -63,11 +63,26 @@ class RoboFile extends \Robo\Tasks
     if (file_exists("{$temp_dir}/.gitmodules")) {
       $this->taskExecStack()
         ->stopOnFail()
-        ->exec("cd {$temp_dir} && git submodule update --init --recursive")
+        ->exec("cd {$temp_dir} && git submodule update --init --recursive --remote")
         ->run();
+
+      // Remove .gitmodules file.
       $this->taskFileSystemStack()
         ->remove("{$temp_dir}/.gitmodules")
         ->run();
+
+      // Remove ".git" references from submodules.
+      $files = Finder::create()
+        ->files()
+        ->in($temp_dir)
+        ->ignoreVCS(false)
+        ->ignoreDotFiles(false)
+        ->name('.git');
+      foreach ($files as $file) {
+        $this->taskFileSystemStack()
+          ->remove($file->getRealpath())
+          ->run();
+      }
     }
 
     $this->say('Removing git stuff...');
