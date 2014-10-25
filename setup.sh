@@ -154,8 +154,7 @@ SAFE_NAME=`slugify $NAME`
 TPL_DIR="./template"
 
 # Create temporary directory
-RAND=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
-TMP_DIR="./drupal-ignite-core-$RAND"
+TMP_DIR=`mktemp -d`
 
 if [ ! -d $TMP_DIR ]; then
     mkdir -p $TMP_DIR
